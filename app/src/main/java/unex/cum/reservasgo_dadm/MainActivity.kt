@@ -22,7 +22,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import unex.cum.reservasgo_dadm.ui.theme.ReservasGO_DADMTheme
 import unex.cum.reservasgo_dadm.view.MainScreen
 import unex.cum.reservasgo_dadm.view.RestaurantItem
-import unex.cum.reservasgo_dadm.viewmodel.MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
