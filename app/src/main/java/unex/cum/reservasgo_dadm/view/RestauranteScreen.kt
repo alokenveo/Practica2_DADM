@@ -17,10 +17,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,10 +42,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -51,6 +53,9 @@ import unex.cum.reservasgo_dadm.ui.theme.colorApp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RestauranteScreen(navController: NavHostController) {
+
+    var hacerReserva by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -98,7 +103,9 @@ fun RestauranteScreen(navController: NavHostController) {
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate("mainScreen")
+                    }) {
                         Icon(
                             Icons.Default.Home,
                             contentDescription = "Inicio",
@@ -117,7 +124,9 @@ fun RestauranteScreen(navController: NavHostController) {
                         )
                     }
                     Spacer(modifier = Modifier.width(50.dp))
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate("usuarioScreen")
+                    }) {
                         Icon(
                             Icons.Filled.AccountCircle,
                             contentDescription = "Perfil de Usuario",
@@ -139,6 +148,7 @@ fun RestauranteScreen(navController: NavHostController) {
                     .padding(horizontal = 16.dp)
             ) {
                 item {
+                    Spacer(modifier = Modifier.height(20.dp))
                     Image(
                         painter = painterResource(id = R.drawable.ic_restaurante),
                         contentDescription = "Foto del restaurante",
@@ -157,16 +167,22 @@ fun RestauranteScreen(navController: NavHostController) {
                             .padding(bottom = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            fontSize = 12.sp,
-                            text = "Otra característica",
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                        Text(
-                            fontSize = 12.sp,
-                            text = "Calle La Albuera Nº 3",
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
+                        Row() {
+                            Icon(Icons.Default.Star, contentDescription = "Rating")
+                            Text(
+                                fontSize = 12.sp,
+                                text = "Rating promedio",
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                        Row() {
+                            Icon(Icons.Default.LocationOn, contentDescription = "Dirección")
+                            Text(
+                                fontSize = 12.sp,
+                                text = "Calle La Albuera Nº 3",
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
                     }
                     Row(
                         modifier = Modifier
@@ -174,16 +190,26 @@ fun RestauranteScreen(navController: NavHostController) {
                             .padding(bottom = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            fontSize = 12.sp,
-                            text = "Tipo de cocina",
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                        Text(
-                            fontSize = 12.sp,
-                            text = "Marcar como favorito",
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
+                        Row {
+                            Icon(Icons.Default.Restaurant, contentDescription = "Tipo de cocina")
+                            Text(
+                                fontSize = 12.sp,
+                                text = "Tipo de cocina",
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                        }
+                        Row {
+                            Icon(
+                                Icons.Default.StarOutline,
+                                contentDescription = "Marcar como favorito"
+                            )
+                            Text(
+                                fontSize = 12.sp,
+                                text = "Añadir a favoritos",
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                textAlign = TextAlign.Justify
+                            )
+                        }
                     }
                     Text(
                         text = "Un restaurante es un establecimiento de comida donde los clientes pueden disfrutar de una variedad de platos en un ambiente cómodo y acogedor. Los menús suelen incluir opciones que van desde aperitivos y platos principales hasta postres y bebidas. En el restaurante, el servicio es proporcionado por un equipo que puede incluir anfitriones, camareros y chefs.",
@@ -194,10 +220,12 @@ fun RestauranteScreen(navController: NavHostController) {
                 }
             }
             Button(
-                onClick = { /* Acción para reservar */ },
+                onClick = {
+                    hacerReserva = true
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(horizontal = 40.dp, vertical = 16.dp)
                     .align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorApp
@@ -205,6 +233,24 @@ fun RestauranteScreen(navController: NavHostController) {
             ) {
                 Text(text = "Reservar")
             }
+        }
+
+        if (hacerReserva) {
+            AlertDialog(
+                onDismissRequest = { hacerReserva = false },
+                title = { Text("Reservar restaurante") },
+                text={ ReservaScreen()},
+                confirmButton = {
+                    Button(
+                        onClick = {hacerReserva=false},
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorApp
+                        )
+                    ){
+                        Text("Terminar Reserva")
+                    }
+                }
+            )
         }
     }
 }

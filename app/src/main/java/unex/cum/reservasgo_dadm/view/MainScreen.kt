@@ -11,23 +11,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +51,7 @@ import unex.cum.reservasgo_dadm.view.cards.RestauranteCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
+    var mostrarFiltros by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -123,7 +130,9 @@ fun MainScreen(navController: NavHostController) {
         }
     }, floatingActionButton = {
         FloatingActionButton(
-            onClick = { },
+            onClick = {
+                mostrarFiltros = true
+            },
             containerColor = colorApp
         ) {
             //TODO añadir iconos
@@ -137,8 +146,26 @@ fun MainScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(20) { index ->
-                RestauranteCard(index,navController)
+                RestauranteCard(index, navController)
             }
+        }
+
+        if (mostrarFiltros) {
+            AlertDialog(
+                onDismissRequest = { mostrarFiltros = false },
+                title = { Text(text = "Filtrar restaurantes") },
+                text = { FiltrosScreen() },
+                confirmButton = {
+                    Button(
+                        onClick = { mostrarFiltros = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorApp
+                        )
+                    ) {
+                        Text("Filtrar")
+                    }
+                }
+            )
         }
     }
 }

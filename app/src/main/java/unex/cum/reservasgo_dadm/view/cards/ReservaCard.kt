@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import unex.cum.reservasgo_dadm.R
 
 @Composable
-fun ReservaCard(index: Int) {
+fun ReservaCard(index: Int, onReservaClick:()->Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,7 +32,7 @@ fun ReservaCard(index: Int) {
                 bottom = 8.dp
             )
             .border(BorderStroke(2.dp, Color.Gray))
-            .clickable(onClick = {})
+            .clickable(onClick = onReservaClick)
     ) {
         //TODO añadir contenido
         Image(

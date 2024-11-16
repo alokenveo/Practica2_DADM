@@ -13,14 +13,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.StarHalf
+import androidx.compose.ui.Alignment
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,11 +38,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,7 +95,9 @@ fun UsuarioScreen(navController: NavHostController) {
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate("mainScreen")
+                    }) {
                         Icon(
                             Icons.Default.Home,
                             contentDescription = "Inicio",
@@ -121,71 +127,93 @@ fun UsuarioScreen(navController: NavHostController) {
             }
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "Usuario",
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(text = "Nombre completo", fontSize = 12.sp)
-            TextField(value = "", onValueChange = {})
+            item {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = "Usuario",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .drawBehind {
+                            drawLine(
+                                color = Color.Gray,
+                                start = Offset(0f, size.height),
+                                end = Offset(size.width, size.height),
+                                strokeWidth = 1.dp.toPx()
+                            )
+                        }
+                )
 
-            Text(text = "Correo Electrónico", fontSize = 12.sp)
-            TextField(value = "", onValueChange = {})
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "Nombre completo", fontSize = 12.sp)
+                    TextField(value = "", onValueChange = {})
 
-            Text(text = "Contraseña", fontSize = 12.sp)
-            TextField(value = "", onValueChange = {})
+                    Text(text = "Correo Electrónico", fontSize = 12.sp)
+                    TextField(value = "", onValueChange = {})
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clickable(onClick = {})
-                    .drawBehind {
-                        val strokeWidth = 1.dp.toPx()
-                        drawLine(
-                            color = Color.Gray,
-                            start = Offset(0f, size.height),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = strokeWidth
-                        )
-                    },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                    Text(text = "Contraseña", fontSize = 12.sp)
+                    TextField(value = "", onValueChange = {})
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable(onClick = {
+                            navController.navigate("favoritosScreen")
+                        })
+                        .drawBehind {
+                            drawLine(
+                                color = Color.Gray,
+                                start = Offset(0f, size.height),
+                                end = Offset(size.width, size.height),
+                                strokeWidth = 1.dp.toPx()
+                            )
+                        },
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.StarHalf,
+                            contentDescription = "Lista",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(text = "Favoritos")
+                    }
                     Icon(
-                        imageVector = Icons.Default.StarHalf,
-                        contentDescription = "Lista",
-                        modifier = Modifier.padding(end = 8.dp)
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Flecha a la derecha"
                     )
-                    Text(text = "Favoritos")
                 }
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "Flecha a la derecha"
-                )
-            }
 
-
-            Button(
-                onClick = { /* Acción para reservar */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorApp
-                ),
-            ) {
-                Text(text = "Cerrar sesión")
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = { /* Acción para reservar */ },
+                        modifier = Modifier
+                            .padding(40.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red
+                        ),
+                    ) {
+                        Text(text = "Cerrar sesión")
+                    }
+                }
             }
         }
     }

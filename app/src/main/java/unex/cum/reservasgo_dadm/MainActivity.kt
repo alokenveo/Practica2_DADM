@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ReservasGO_DADMTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    val navController= rememberNavController()
+                    val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "mainScreen") {
                         composable("mainScreen") {
                             MainScreen(navController)
@@ -35,32 +35,27 @@ class MainActivity : ComponentActivity() {
                         composable("reservasScreen") {
                             ReservasScreen(navController)
                         }
-                        composable("notificacionesScreen"){
+                        composable("notificacionesScreen") {
                             NotificacionesScreen(navController)
                         }
-                        composable("reservaScreen"){
-                            ReservaScreen()
+                        composable("favoritosScreen") {
+                            FavoritosScreen(navController)
                         }
-                        composable("restauranteScreen"){
-                            RestauranteScreen(navController)
-                        }
-                        composable("favoritosScreen"){
-                            FavoritosScreen()
-                        }
-                        composable("usuarioScreen"){
+                        composable("usuarioScreen") {
                             UsuarioScreen(navController)
                         }
-                        composable("filtrosScreen"){
-                            FiltrosScreen()
+                        composable("restauranteScreen") {
+                            RestauranteScreen(navController)
                         }
-                        composable("loginScreen"){
+                        composable("loginScreen") {
                             LoginScreen()
                         }
+                    }
                 }
             }
         }
     }
-}}
+}
 
 
 

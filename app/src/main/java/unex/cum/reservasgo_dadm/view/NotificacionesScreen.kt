@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
@@ -90,7 +89,9 @@ Scaffold(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate("mainScreen")
+                    }) {
                         Icon(
                             Icons.Default.Home,
                             contentDescription = "Inicio",
@@ -99,7 +100,9 @@ Scaffold(
                     }
                     Spacer(modifier = Modifier.width(50.dp))
                     //TODO añadir iconos
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate("reservasScreen")
+                    }) {
                         Icon(
                             Icons.AutoMirrored.Filled.Assignment,
                             contentDescription = "Reservas",
@@ -107,7 +110,9 @@ Scaffold(
                         )
                     }
                     Spacer(modifier = Modifier.width(50.dp))
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate("usuarioScreen")
+                    }) {
                         Icon(
                             Icons.Filled.AccountCircle,
                             contentDescription = "Perfil de Usuario",
