@@ -21,12 +21,12 @@ import androidx.compose.ui.unit.sp
 import unex.cum.reservasgo_dadm.R
 
 @Composable
-fun ReservaCard(index: Int) {
-    Row(
+fun NotificacionCard(index: Int) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start=16.dp,
+                start = 16.dp,
                 top = 16.dp,
                 end = 16.dp,
                 bottom = 8.dp
@@ -34,23 +34,16 @@ fun ReservaCard(index: Int) {
             .border(BorderStroke(2.dp, Color.Gray))
             .clickable(onClick = {})
     ) {
-        //TODO añadir contenido
-        Image(
-            painter = painterResource(id = R.drawable.ic_restaurante),
-            contentDescription = "Logo de la app",
-            modifier = Modifier.fillMaxHeight(),
-            contentScale = ContentScale.Crop
+        Text(
+            text = "Notificacion ${index + 1}",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(5.dp)
         )
-        Column() {
-            Text(
-                text = "Reserva ${index + 1}",
-                fontSize=18.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text="Breve descripción de la reserva",
-                fontSize = 12.sp
-            )
-        }
+        Text(
+            text = "Breve descripción de la notificacion",
+            fontSize = 12.sp,
+            modifier = Modifier.padding(5.dp)
+        )
     }
 }

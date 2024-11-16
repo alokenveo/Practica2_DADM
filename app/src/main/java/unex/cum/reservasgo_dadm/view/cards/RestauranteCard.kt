@@ -7,11 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,17 +24,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
 
 
 @Composable
-fun RestauranteCard(index: Int) {
+fun RestauranteCard(index: Int, navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .border(BorderStroke(2.dp, Color.Gray))
-            .clickable(onClick = {})
+            .clickable(onClick = {
+                navController.navigate("restauranteScreen")
+            })
             .padding(8.dp)
     ) {
         Image(
@@ -63,7 +65,7 @@ fun RestauranteCard(index: Int) {
                 )
             }
             IconButton(onClick = {}) {
-                Icon(Icons.Outlined.Star, contentDescription = "Favoritos")
+                Icon(Icons.Default.StarBorder, contentDescription = "Favoritos")
             }
         }
     }

@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -72,7 +72,9 @@ fun MainScreen(navController: NavHostController) {
             },
             actions = {
                 // Acciones de la derecha (iconos)
-                IconButton(onClick = { /* Acción al hacer clic en el icono */ }) {
+                IconButton(onClick = {
+                    navController.navigate("notificacionesScreen")
+                }) {
                     Icon(Icons.Default.Notifications, contentDescription = "Notificaciones")
                 }
             },
@@ -102,13 +104,15 @@ fun MainScreen(navController: NavHostController) {
                     navController.navigate("reservasScreen")
                 }) {
                     Icon(
-                        Icons.Filled.DateRange,
+                        Icons.AutoMirrored.Filled.Assignment,
                         contentDescription = "Reservas",
                         modifier = Modifier.size(28.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(50.dp))
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    navController.navigate("usuarioScreen")
+                }) {
                     Icon(
                         Icons.Filled.AccountCircle,
                         contentDescription = "Perfil de Usuario",
@@ -123,7 +127,7 @@ fun MainScreen(navController: NavHostController) {
             containerColor = colorApp
         ) {
             //TODO añadir iconos
-            Icon(Icons.Default.MoreVert, contentDescription = "Filtros")
+            Icon(Icons.Default.Tune, contentDescription = "Filtros")
         }
     }) { innerPadding ->
         LazyColumn(
@@ -133,7 +137,7 @@ fun MainScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(20) { index ->
-                RestauranteCard(index)
+                RestauranteCard(index,navController)
             }
         }
     }

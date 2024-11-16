@@ -10,8 +10,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import unex.cum.reservasgo_dadm.ui.theme.ReservasGO_DADMTheme
+import unex.cum.reservasgo_dadm.view.FavoritosScreen
+import unex.cum.reservasgo_dadm.view.FiltrosScreen
+import unex.cum.reservasgo_dadm.view.LoginScreen
 import unex.cum.reservasgo_dadm.view.MainScreen
+import unex.cum.reservasgo_dadm.view.NotificacionesScreen
+import unex.cum.reservasgo_dadm.view.ReservaScreen
 import unex.cum.reservasgo_dadm.view.ReservasScreen
+import unex.cum.reservasgo_dadm.view.RestauranteScreen
+import unex.cum.reservasgo_dadm.view.UsuarioScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +34,27 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("reservasScreen") {
                             ReservasScreen(navController)
+                        }
+                        composable("notificacionesScreen"){
+                            NotificacionesScreen(navController)
+                        }
+                        composable("reservaScreen"){
+                            ReservaScreen()
+                        }
+                        composable("restauranteScreen"){
+                            RestauranteScreen(navController)
+                        }
+                        composable("favoritosScreen"){
+                            FavoritosScreen()
+                        }
+                        composable("usuarioScreen"){
+                            UsuarioScreen(navController)
+                        }
+                        composable("filtrosScreen"){
+                            FiltrosScreen()
+                        }
+                        composable("loginScreen"){
+                            LoginScreen()
                         }
                 }
             }
