@@ -37,7 +37,6 @@ fun FavoritoCard(index: Int, navController: NavHostController) {
                 navController.navigate("restauranteScreen")
             })
     ) {
-        //TODO añadir contenido
         Image(
             painter = painterResource(id = R.drawable.ic_restaurante),
             contentDescription = "Logo de la app",

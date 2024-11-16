@@ -99,7 +99,6 @@ fun FavoritosScreen(navController: NavHostController) {
                         )
                     }
                     Spacer(modifier = Modifier.width(50.dp))
-                    //TODO añadir iconos
                     IconButton(onClick = {
                         navController.navigate("reservasScreen")
                     }) {
