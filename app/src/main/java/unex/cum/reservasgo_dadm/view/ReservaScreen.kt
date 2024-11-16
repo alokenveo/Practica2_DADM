@@ -26,8 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import unex.cum.reservasgo_dadm.ui.theme.colorApp
 import java.util.Calendar
 
 @Composable
@@ -94,10 +97,14 @@ fun ReservaScreen() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Cantidad de comensales", style = MaterialTheme.typography.bodyLarge)
-
+        }
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 IconButton(onClick = { if (cantidadComensales > 1) cantidadComensales-- }) {
                     Icon(Icons.Default.Remove, contentDescription = "Disminuir")
@@ -111,11 +118,15 @@ fun ReservaScreen() {
             }
         }
 
+
         // Selección de fecha
         Text("Seleccionar fecha", style = MaterialTheme.typography.titleMedium)
         Button(
             onClick = { mostrarDatePicker.value = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorApp
+            )
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -130,7 +141,10 @@ fun ReservaScreen() {
         Text("Seleccionar hora", style = MaterialTheme.typography.titleMedium)
         Button(
             onClick = { mostrarTimePicker.value = true },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorApp
+            )
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -146,9 +160,8 @@ fun ReservaScreen() {
 
 @Composable
 fun InfoReservaScreen() {
-    Text("Información de la reserva", style = MaterialTheme.typography.titleLarge)
     Text(
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.titleMedium,
         text = "Un restaurante es un establecimiento de comida donde los clientes pueden disfrutar de una variedad de platos en un ambiente cómodo y acogedor. Los menús suelen incluir opciones que van desde aperitivos y platos principales hasta postres y bebidas. En el restaurante, el servicio es proporcionado por un equipo que puede incluir anfitriones, camareros y chefs."
     )
 }

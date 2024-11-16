@@ -1,9 +1,13 @@
 package unex.cum.reservasgo_dadm.model
 
 data class Usuario(
-    val id:String,
-    val nombre:String,
-    val email:String,
-    val password:String,
-    val restaurantesFavoritos:List<String> = emptyList()
+    val id_usuario: Int,
+    val nombre: String,
+    val correo_electronico: String,
+    val contraseña: String,
+    val foto_perfil: String,
+    val fecha_registro: String,
+    val telefono: String,
+    val direccion: String
 )
+
