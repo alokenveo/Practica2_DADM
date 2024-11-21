@@ -1,4 +1,4 @@
-package unex.cum.reservasgo_dadm.view
+package unex.cum.reservasgo_dadm.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

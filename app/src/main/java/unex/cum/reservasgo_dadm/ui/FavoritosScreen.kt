@@ -1,4 +1,4 @@
-package unex.cum.reservasgo_dadm.view
+package unex.cum.reservasgo_dadm.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
-import unex.cum.reservasgo_dadm.view.cards.FavoritoCard
+import unex.cum.reservasgo_dadm.ui.cards.FavoritoCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

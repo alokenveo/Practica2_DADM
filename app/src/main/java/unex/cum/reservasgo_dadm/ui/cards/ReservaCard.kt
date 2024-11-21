@@ -1,4 +1,4 @@
-package unex.cum.reservasgo_dadm.view.cards
+package unex.cum.reservasgo_dadm.ui.cards
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

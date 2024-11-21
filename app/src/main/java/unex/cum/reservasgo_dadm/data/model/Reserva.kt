@@ -1,4 +1,4 @@
-package unex.cum.reservasgo_dadm.model
+package unex.cum.reservasgo_dadm.data.model
 
 data class Reserva(
     val id_reserva: Int,

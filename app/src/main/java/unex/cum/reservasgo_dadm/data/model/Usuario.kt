@@ -1,4 +1,4 @@
-package unex.cum.reservasgo_dadm.model
+package unex.cum.reservasgo_dadm.data.model
 
 data class Usuario(
     val id_usuario: Int,

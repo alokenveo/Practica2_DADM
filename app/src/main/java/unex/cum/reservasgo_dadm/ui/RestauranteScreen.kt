@@ -1,4 +1,4 @@
-package unex.cum.reservasgo_dadm.view
+package unex.cum.reservasgo_dadm.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
+import unex.cum.reservasgo_dadm.ui.ReservaScreen
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -239,7 +240,7 @@ fun RestauranteScreen(navController: NavHostController) {
             AlertDialog(
                 onDismissRequest = { hacerReserva = false },
                 title = { Text("Reservar restaurante") },
-                text={ ReservaScreen()},
+                text={ ReservaScreen() },
                 confirmButton = {
                     Button(
                         onClick = {hacerReserva=false},

@@ -1,4 +1,4 @@
-package unex.cum.reservasgo_dadm.view
+package unex.cum.reservasgo_dadm.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -41,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
-import unex.cum.reservasgo_dadm.view.cards.ReservaCard
+import unex.cum.reservasgo_dadm.ui.cards.ReservaCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,7 +146,7 @@ fun ReservasScreen(navController: NavHostController) {
             AlertDialog(
                 onDismissRequest = { verReserva = false },
                 title = { Text("Ver reserva") },
-                text={ InfoReservaScreen()},
+                text={ InfoReservaScreen() },
                 confirmButton = {
                     Button(
                         onClick = {verReserva=false},

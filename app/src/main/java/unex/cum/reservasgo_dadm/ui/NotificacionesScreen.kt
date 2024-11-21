@@ -1,10 +1,7 @@
-package unex.cum.reservasgo_dadm.view
+package unex.cum.reservasgo_dadm.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,43 +14,31 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Assignment
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.StarHalf
-import androidx.compose.ui.Alignment
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
+import unex.cum.reservasgo_dadm.ui.cards.NotificacionCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsuarioScreen(navController: NavHostController) {
-    Scaffold(
+fun NotificacionesScreen(navController: NavHostController){
+Scaffold(
         topBar = {
             TopAppBar(
                 title = {
@@ -78,6 +63,15 @@ fun UsuarioScreen(navController: NavHostController) {
                             painter = painterResource(id = R.drawable.ic_logo),
                             contentDescription = "Logo de la app",
                             modifier = Modifier.height(45.dp)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = "Buscar",
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 },
@@ -116,7 +110,9 @@ fun UsuarioScreen(navController: NavHostController) {
                         )
                     }
                     Spacer(modifier = Modifier.width(50.dp))
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.navigate("usuarioScreen")
+                    }) {
                         Icon(
                             Icons.Filled.AccountCircle,
                             contentDescription = "Perfil de Usuario",
@@ -129,92 +125,13 @@ fun UsuarioScreen(navController: NavHostController) {
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(innerPadding)
+                .fillMaxWidth()
         ) {
-            item {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = "Usuario",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .drawBehind {
-                            drawLine(
-                                color = Color.Gray,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = 1.dp.toPx()
-                            )
-                        }
-                )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "Nombre completo", fontSize = 12.sp)
-                    TextField(value = "", onValueChange = {})
-
-                    Text(text = "Correo Electrónico", fontSize = 12.sp)
-                    TextField(value = "", onValueChange = {})
-
-                    Text(text = "Contraseña", fontSize = 12.sp)
-                    TextField(value = "", onValueChange = {})
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .clickable(onClick = {
-                            navController.navigate("favoritosScreen")
-                        })
-                        .drawBehind {
-                            drawLine(
-                                color = Color.Gray,
-                                start = Offset(0f, size.height),
-                                end = Offset(size.width, size.height),
-                                strokeWidth = 1.dp.toPx()
-                            )
-                        },
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.StarHalf,
-                            contentDescription = "Lista",
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(text = "Favoritos")
-                    }
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "Flecha a la derecha"
-                    )
-                }
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(
-                        onClick = { /* Acción para reservar */ },
-                        modifier = Modifier
-                            .padding(40.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red
-                        ),
-                    ) {
-                        Text(text = "Cerrar sesión")
-                    }
-                }
+            items(20) { index ->
+                NotificacionCard(index)
             }
         }
     }
+
 }

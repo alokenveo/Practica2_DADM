@@ -10,15 +10,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import unex.cum.reservasgo_dadm.ui.theme.ReservasGO_DADMTheme
-import unex.cum.reservasgo_dadm.view.FavoritosScreen
-import unex.cum.reservasgo_dadm.view.FiltrosScreen
-import unex.cum.reservasgo_dadm.view.LoginScreen
-import unex.cum.reservasgo_dadm.view.MainScreen
-import unex.cum.reservasgo_dadm.view.NotificacionesScreen
-import unex.cum.reservasgo_dadm.view.ReservaScreen
-import unex.cum.reservasgo_dadm.view.ReservasScreen
-import unex.cum.reservasgo_dadm.view.RestauranteScreen
-import unex.cum.reservasgo_dadm.view.UsuarioScreen
+import unex.cum.reservasgo_dadm.ui.FavoritosScreen
+import unex.cum.reservasgo_dadm.ui.LoginScreen
+import unex.cum.reservasgo_dadm.ui.MainScreen
+import unex.cum.reservasgo_dadm.ui.NotificacionesScreen
+import unex.cum.reservasgo_dadm.ui.ReservasScreen
+import unex.cum.reservasgo_dadm.ui.RestauranteScreen
+import unex.cum.reservasgo_dadm.ui.UsuarioScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
