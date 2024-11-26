@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import unex.cum.reservasgo_dadm.ui.theme.ReservasGO_DADMTheme
 import unex.cum.reservasgo_dadm.ui.FavoritosScreen
 import unex.cum.reservasgo_dadm.ui.LoginScreen
@@ -42,8 +44,13 @@ class MainActivity : ComponentActivity() {
                         composable("usuarioScreen") {
                             UsuarioScreen(navController)
                         }
-                        composable("restauranteScreen") {
-                            RestauranteScreen(navController)
+                        composable("restauranteScreen/{restauranteId}",
+                            arguments = listOf(navArgument("restauranteId") {
+                                type = NavType.IntType
+                            })
+                        ) {backStackEntry ->
+                            val restauranteId=backStackEntry.arguments?.getInt("restauranteId")?:0
+                            RestauranteScreen(navController,restauranteId)
                         }
                         composable("loginScreen") {
                             LoginScreen()

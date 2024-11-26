@@ -27,6 +27,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,26 +37,39 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import unex.cum.reservasgo_dadm.R
-import unex.cum.reservasgo_dadm.ui.ReservaScreen
+import unex.cum.reservasgo_dadm.data.model.Restaurante
+import unex.cum.reservasgo_dadm.data.repository.RestaurantesRepository
+import unex.cum.reservasgo_dadm.network.RetrofitClient
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RestauranteScreen(navController: NavHostController) {
+fun RestauranteScreen(navController: NavHostController, restauranteId: Int) {
 
+    var restaurante by remember { mutableStateOf<Restaurante?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
     var hacerReserva by remember { mutableStateOf(false) }
+
+    LaunchedEffect(restauranteId) {
+        val repo = RestaurantesRepository(RetrofitClient.api)
+        restaurante = repo.obtenerRestaurantePorId(restauranteId)
+        isLoading = false
+    }
 
     Scaffold(
         topBar = {
@@ -143,96 +157,110 @@ fun RestauranteScreen(navController: NavHostController) {
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 16.dp)
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_restaurante),
-                        contentDescription = "Foto del restaurante",
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(16.dp)
+                )
+            } else {
+                restaurante?.let { res ->
+                    LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp)
-                    )
-                    Text(
-                        "Restaurante 1",
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .weight(1f)
+                            .padding(horizontal = 16.dp)
                     ) {
-                        Row() {
-                            Icon(Icons.Default.Star, contentDescription = "Rating")
-                            Text(
-                                fontSize = 12.sp,
-                                text = "Rating promedio",
-                                modifier = Modifier.align(Alignment.CenterVertically)
+                        item {
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Image(
+                                painter = rememberAsyncImagePainter(model=res.foto),
+                                contentDescription = "Foto del restaurante",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp),
+                                contentScale = ContentScale.Crop
                             )
-                        }
-                        Row() {
-                            Icon(Icons.Default.LocationOn, contentDescription = "Dirección")
                             Text(
-                                fontSize = 12.sp,
-                                text = "Calle La Albuera Nº 3",
-                                modifier = Modifier.align(Alignment.CenterVertically)
+                                res.nombre,
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row() {
+                                    Icon(Icons.Default.Star, contentDescription = "Rating")
+                                    Text(
+                                        fontSize = 12.sp,
+                                        text = "${res.rating_promedio}",
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
+                                }
+                                Row() {
+                                    Icon(Icons.Default.LocationOn, contentDescription = "Dirección")
+                                    Text(
+                                        fontSize = 12.sp,
+                                        text = res.direccion,
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row {
+                                    Icon(
+                                        Icons.Default.Restaurant,
+                                        contentDescription = "Tipo de cocina"
+                                    )
+                                    Text(
+                                        fontSize = 12.sp,
+                                        text = res.tipo_cocina,
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
+                                }
+                                Row {
+                                    Icon(
+                                        Icons.Default.StarOutline,
+                                        contentDescription = "Marcar como favorito"
+                                    )
+                                    Text(
+                                        fontSize = 12.sp,
+                                        text = "Añadir a favoritos",
+                                        modifier = Modifier.align(Alignment.CenterVertically),
+                                        textAlign = TextAlign.Justify
+                                    )
+                                }
+                            }
+                            Text(
+                                text = res.descripcion,
+                                style = MaterialTheme.typography.bodyMedium,
+                                lineHeight = 20.sp,
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
                         }
                     }
-                    Row(
+                    Button(
+                        onClick = {
+                            hacerReserva = true
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .padding(horizontal = 40.dp, vertical = 16.dp)
+                            .align(Alignment.CenterHorizontally),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorApp
+                        ),
                     ) {
-                        Row {
-                            Icon(Icons.Default.Restaurant, contentDescription = "Tipo de cocina")
-                            Text(
-                                fontSize = 12.sp,
-                                text = "Tipo de cocina",
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                        }
-                        Row {
-                            Icon(
-                                Icons.Default.StarOutline,
-                                contentDescription = "Marcar como favorito"
-                            )
-                            Text(
-                                fontSize = 12.sp,
-                                text = "Añadir a favoritos",
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                textAlign = TextAlign.Justify
-                            )
-                        }
+                        Text(text = "Reservar")
                     }
-                    Text(
-                        text = "Un restaurante es un establecimiento de comida donde los clientes pueden disfrutar de una variedad de platos en un ambiente cómodo y acogedor. Los menús suelen incluir opciones que van desde aperitivos y platos principales hasta postres y bebidas. En el restaurante, el servicio es proporcionado por un equipo que puede incluir anfitriones, camareros y chefs.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        lineHeight = 20.sp,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
                 }
-            }
-            Button(
-                onClick = {
-                    hacerReserva = true
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 40.dp, vertical = 16.dp)
-                    .align(Alignment.CenterHorizontally),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorApp
-                ),
-            ) {
-                Text(text = "Reservar")
             }
         }
 
@@ -240,14 +268,14 @@ fun RestauranteScreen(navController: NavHostController) {
             AlertDialog(
                 onDismissRequest = { hacerReserva = false },
                 title = { Text("Reservar restaurante") },
-                text={ ReservaScreen() },
+                text = { ReservaScreen() },
                 confirmButton = {
                     Button(
-                        onClick = {hacerReserva=false},
+                        onClick = { hacerReserva = false },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = colorApp
                         )
-                    ){
+                    ) {
                         Text("Terminar Reserva")
                     }
                 }

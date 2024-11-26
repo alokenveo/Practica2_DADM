@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.StarBorder
@@ -25,26 +26,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import unex.cum.reservasgo_dadm.R
+import unex.cum.reservasgo_dadm.data.model.Restaurante
 
 
 @Composable
-fun RestauranteCard(index: Int, navController: NavHostController) {
+fun RestauranteCard(restaurante: Restaurante, navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .border(BorderStroke(2.dp, Color.Gray))
             .clickable(onClick = {
-                navController.navigate("restauranteScreen")
+                navController.navigate("restauranteScreen/${restaurante.id_restaurante}")
             })
             .padding(8.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_restaurante),
+            painter = rememberAsyncImagePainter(
+                model = restaurante.foto
+            ),
             contentDescription = "Imagen del restaurante",
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(200.dp),
             contentScale = ContentScale.Crop
         )
         Row(
@@ -55,12 +61,12 @@ fun RestauranteCard(index: Int, navController: NavHostController) {
         ) {
             Column() {
                 Text(
-                    text = "Restaurante ${index + 1}",
+                    text = restaurante.nombre,
                     fontSize=18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text="Breve descripción del restaurante",
+                    text=restaurante.descripcion,
                     fontSize = 12.sp
                 )
             }
