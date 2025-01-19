@@ -4,11 +4,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.1.33/"
+    private const val BASE_URL = "http://192.168.1.38/"
 
-    val api: RestaurantesAPI = Retrofit.Builder()
+    val api: ReservasGoAPI = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-        .create(RestaurantesAPI::class.java)
+        .create(ReservasGoAPI::class.java)
 }

@@ -1,5 +1,6 @@
 package unex.cum.reservasgo_dadm.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +54,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.data.model.Restaurante
-import unex.cum.reservasgo_dadm.data.repository.RestaurantesRepository
+import unex.cum.reservasgo_dadm.data.repository.ReservasGoRepository
 import unex.cum.reservasgo_dadm.network.RetrofitClient
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 
@@ -66,7 +67,7 @@ fun RestauranteScreen(navController: NavHostController, restauranteId: Int) {
     var hacerReserva by remember { mutableStateOf(false) }
 
     LaunchedEffect(restauranteId) {
-        val repo = RestaurantesRepository(RetrofitClient.api)
+        val repo = ReservasGoRepository(RetrofitClient.api)
         restaurante = repo.obtenerRestaurantePorId(restauranteId)
         isLoading = false
     }
@@ -172,13 +173,13 @@ fun RestauranteScreen(navController: NavHostController, restauranteId: Int) {
                     ) {
                         item {
                             Spacer(modifier = Modifier.height(20.dp))
+                            Log.d("URL_FOTO","url: ${res.foto}")
                             Image(
                                 painter = rememberAsyncImagePainter(model=res.foto),
                                 contentDescription = "Foto del restaurante",
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 8.dp),
-                                contentScale = ContentScale.Crop
+                                    .padding(bottom = 8.dp)
                             )
                             Text(
                                 res.nombre,

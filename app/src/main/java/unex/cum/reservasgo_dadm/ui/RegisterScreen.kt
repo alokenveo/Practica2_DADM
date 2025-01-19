@@ -1,5 +1,6 @@
 package unex.cum.reservasgo_dadm.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +24,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,36 +35,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import unex.cum.reservasgo_dadm.R
-import unex.cum.reservasgo_dadm.viewmodel.LoginVM
-import unex.cum.reservasgo_dadm.viewmodel.LoginVMFactory
+import unex.cum.reservasgo_dadm.viewmodel.RegisterVM
+import unex.cum.reservasgo_dadm.viewmodel.RegisterVMFactory
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     navController: NavHostController,
-    loginVM: LoginVM = viewModel(factory = LoginVMFactory())
+    registerVM: RegisterVM = viewModel(factory = RegisterVMFactory())
 ) {
+    var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val loginResult by loginVM.loginResult.collectAsState()
+    var direccion by remember { mutableStateOf("") }
+    var telefono by remember { mutableStateOf("") }
+    val registerResult by registerVM.registerResult.collectAsState()
 
-    // Si el login es exitoso, navegar a MainScreen
-    LaunchedEffect(loginResult) {
-        if (loginResult == "success") {
-            navController.navigate("mainScreen") {
-                popUpTo("loginScreen") { inclusive = true }
+    // Verifica si el registro fue exitoso y navega al login
+    LaunchedEffect(registerResult) {
+        if (registerResult == "Usuario registrado correctamente") {
+            navController.navigate("loginScreen") {
+                popUpTo("registerScreen") { inclusive = true }
             }
         }
     }
 
 
     Scaffold(
-        modifier = Modifier.background(colorApp) // Aplica el color de fondo
+        modifier = Modifier.background(colorApp) // Color de fondo
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(colorApp), // Asegura que el fondo se aplica a toda la pantalla
+                .background(colorApp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -72,16 +75,16 @@ fun LoginScreen(
             Image(
                 painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = "Logo de la app",
-                modifier = Modifier.height(100.dp)
+                modifier = Modifier.height(80.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Título
             Text(
-                text = "Iniciar sesión",
+                text = "Registrarse",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground // Asegura contraste
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -90,6 +93,16 @@ fun LoginScreen(
             Column(
                 modifier = Modifier.fillMaxWidth(0.8f)
             ) {
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text("Nombre") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -108,36 +121,54 @@ fun LoginScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = direccion,
+                    onValueChange = { direccion = it },
+                    label = { Text("Dirección") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedTextField(
+                    value = telefono,
+                    onValueChange = { telefono = it },
+                    label = { Text("Teléfono") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón de inicio de sesión
+            // Botón de registro
             Button(
                 onClick = {
-                    loginVM.loginUser(email,password)
+                    registerVM.registrarUsuario(nombre, email, password, direccion, telefono)
                 },
                 modifier = Modifier.fillMaxWidth(0.6f)
             ) {
-                Text("Iniciar sesión")
+                Text("Registrarse")
             }
 
-            loginResult?.let {
-                if (it != "success") {
-                    Text(text = it, color = Color.Red)
-                }
+            registerResult?.let {
+                Text(text = it, color = if (it.contains("correctamente")) Color.Green else Color.Red)
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Opción de registro
+            // Opción de inicio de sesión
             Row {
-                Text("¿No está registrado?", color = MaterialTheme.colorScheme.onBackground)
+                Text("¿Ya tiene cuenta?", color = MaterialTheme.colorScheme.onBackground)
                 Spacer(modifier = Modifier.width(4.dp))
                 TextButton(
-                    onClick = { navController.navigate("registerScreen") }
+                    onClick = { navController.navigate("loginScreen") }
                 ) {
-                    Text("Regístrese aquí", color = MaterialTheme.colorScheme.primary)
+                    Text("Inicie sesión aquí", color = MaterialTheme.colorScheme.primary)
                 }
             }
         }

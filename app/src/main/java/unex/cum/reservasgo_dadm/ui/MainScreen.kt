@@ -61,9 +61,15 @@ fun MainScreen(
     mainVM: MainVM = viewModel(factory = MainVMFactory())
 ) {
     val restaurantes by mainVM.restaurantes.collectAsState()
-    val message by mainVM.message.collectAsState()
+    //val message by mainVM.message.collectAsState()
 
     var mostrarFiltros by remember { mutableStateOf(false) }
+    var filtrosSeleccionados by remember { mutableStateOf<List<String>>(emptyList()) }
+    var ratioBusqueda by remember { mutableStateOf(5f) }
+
+    var restaurantesFiltrados = restaurantes.filter { restaurante ->
+        filtrosSeleccionados.isEmpty() || filtrosSeleccionados.contains(restaurante.tipo_cocina)
+    }
 
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
@@ -169,7 +175,7 @@ fun MainScreen(
                     )
                 }
             } else {
-                items(restaurantes) { restaurante ->
+                items(restaurantesFiltrados) { restaurante ->
                     RestauranteCard(restaurante, navController)
                 }
             }
@@ -179,21 +185,19 @@ fun MainScreen(
             AlertDialog(
                 onDismissRequest = { mostrarFiltros = false },
                 title = { Text(text = "Filtrar restaurantes") },
-                text = { FiltrosScreen() },
-                confirmButton = {
-                    Button(
-                        onClick = { mostrarFiltros = false },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorApp
-                        )
-                    ) {
-                        Text("Filtrar")
-                    }
-                }
+                text = {
+                    FiltrosScreen(
+                        onFiltrar = { tiposSeleccionados, radio ->
+                            filtrosSeleccionados = tiposSeleccionados
+                            ratioBusqueda = radio
+                            mostrarFiltros = false
+                        },
+                        onDismiss = { mostrarFiltros = false }
+                    )
+                },
+                confirmButton = {}
             )
         }
     }
-
-
 }
 

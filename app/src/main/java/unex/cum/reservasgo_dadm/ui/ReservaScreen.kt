@@ -28,6 +28,7 @@ import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.platform.LocalContext
+import unex.cum.reservasgo_dadm.data.model.Reserva
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 import java.util.Calendar
 
@@ -157,9 +158,12 @@ fun ReservaScreen() {
 
 
 @Composable
-fun InfoReservaScreen() {
-    Text(
-        style = MaterialTheme.typography.titleMedium,
-        text = "Un restaurante es un establecimiento de comida donde los clientes pueden disfrutar de una variedad de platos en un ambiente cómodo y acogedor. Los menús suelen incluir opciones que van desde aperitivos y platos principales hasta postres y bebidas. En el restaurante, el servicio es proporcionado por un equipo que puede incluir anfitriones, camareros y chefs."
-    )
+fun InfoReservaScreen(reserva: Reserva, nombreUsuario: String, nombreRestaurante: String) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(text = "Reserva de: $nombreUsuario", style = MaterialTheme.typography.titleMedium)
+        Text(text = "Restaurante: $nombreRestaurante", style = MaterialTheme.typography.bodyMedium)
+        Text(text = "Fecha: ${reserva.fecha_reserva}", style = MaterialTheme.typography.bodyMedium)
+        Text(text = "Personas: ${reserva.numero_personas}", style = MaterialTheme.typography.bodyMedium)
+        Text(text = "Estado: ${reserva.estado_reserva}", style = MaterialTheme.typography.bodyMedium)
+    }
 }

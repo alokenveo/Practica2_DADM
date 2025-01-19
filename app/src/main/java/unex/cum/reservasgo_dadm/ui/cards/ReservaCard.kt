@@ -19,9 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import unex.cum.reservasgo_dadm.R
+import unex.cum.reservasgo_dadm.data.model.Reserva
 
 @Composable
-fun ReservaCard(index: Int, onReservaClick:()->Unit) {
+fun ReservaCard(reserva: Reserva, nombreRestaurante: String, imagenRestaurante: Int, onReservaClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -34,21 +35,20 @@ fun ReservaCard(index: Int, onReservaClick:()->Unit) {
             .border(BorderStroke(2.dp, Color.Gray))
             .clickable(onClick = onReservaClick)
     ) {
-        //TODO añadir contenido
         Image(
-            painter = painterResource(id = R.drawable.ic_restaurante),
+            painter = painterResource(id = imagenRestaurante),
             contentDescription = "Logo de la app",
             modifier = Modifier.fillMaxHeight(),
             contentScale = ContentScale.Crop
         )
         Column() {
             Text(
-                text = "Reserva ${index + 1}",
+                text = "Reserva ${reserva.id_reserva}",
                 fontSize=18.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text="Breve descripción de la reserva",
+                text="Reserva hecha en el restaurante '${nombreRestaurante}'",
                 fontSize = 12.sp
             )
         }

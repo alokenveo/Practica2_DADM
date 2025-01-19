@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import unex.cum.reservasgo_dadm.data.model.Restaurante
-import unex.cum.reservasgo_dadm.data.repository.RestaurantesRepository
+import unex.cum.reservasgo_dadm.data.repository.ReservasGoRepository
 
-class MainVM(private val repository: RestaurantesRepository): ViewModel() {
+class MainVM(private val repository: ReservasGoRepository): ViewModel() {
     private val _restaurantes = MutableStateFlow<List<Restaurante>>(emptyList())
     val restaurantes: StateFlow<List<Restaurante>> = _restaurantes
 
@@ -24,7 +24,6 @@ class MainVM(private val repository: RestaurantesRepository): ViewModel() {
         viewModelScope.launch {
             try {
                 _restaurantes.value = repository.getRestaurantes()
-                Log.d("MainVM", "Restaurantes cargados: $restaurantes")
             } catch (e: Exception) {
                 _message.value = "Error al cargar los heroes: ${e.message}"
             }

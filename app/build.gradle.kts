@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.storage)
+    implementation(libs.androidx.ui.test.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -77,4 +78,8 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.2.2")
+
+    //Data Store
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 }

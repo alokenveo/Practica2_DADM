@@ -9,15 +9,17 @@ import androidx.compose.ui.unit.dp
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 
 @Composable
-fun FiltrosScreen() {
+fun FiltrosScreen(
+    onFiltrar: (List<String>, Float) -> Unit,
+    onDismiss: () -> Unit
+) {
     val tipos_cocina =
         listOf("Mediterránea", "Japonesa", "Mexicana", "Italiana", "Francesa", "Café", "Otros")
-    val cocinasSeleccionadas = remember { mutableStateMapOf<String, Boolean>() }
-
-    // Inicializar las casillas como no seleccionadas
-    tipos_cocina.forEach { cocina ->
-        if (!cocinasSeleccionadas.containsKey(cocina)) {
-            cocinasSeleccionadas[cocina] = false
+    val cocinasSeleccionadas = remember {
+        mutableStateMapOf<String, Boolean>().apply {
+            tipos_cocina.forEach {
+                this[it] = false
+            }
         }
     }
 
@@ -38,7 +40,7 @@ fun FiltrosScreen() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -78,6 +80,17 @@ fun FiltrosScreen() {
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Button(onClick = onDismiss) { Text("Cancelar") }
+            Button(onClick = {
+                val filtrosSeleccionados = cocinasSeleccionadas.filter { it.value }.keys.toList()
+                onFiltrar(filtrosSeleccionados, ratioBusqueda)
+            }) { Text("Filtrar") }
+        }
 
     }
 
