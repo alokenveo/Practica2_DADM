@@ -45,12 +45,6 @@ fun RestauranteCard(
     usuarioId: Int,
     favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory())
 ) {
-    val esFavorito = remember{ mutableStateOf(false) }
-
-    LaunchedEffect (Unit){
-        favoritosVM.esFavorito(usuarioId, restaurante.id_restaurante)
-        esFavorito.value = favoritosVM.esFavoritoResult.value
-    }
 
     Column(
         modifier = Modifier
@@ -93,7 +87,7 @@ fun RestauranteCard(
                 favoritosVM.agregarFavorito(usuarioId, restaurante.id_restaurante)
             }) {
                 Icon(
-                    if (esFavorito.value) Icons.Outlined.Star else Icons.Default.StarBorder,
+                    Icons.Default.StarBorder,
                     contentDescription = "Favoritos"
                 )
             }

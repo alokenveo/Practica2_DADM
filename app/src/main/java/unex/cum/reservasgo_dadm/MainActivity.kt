@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                             ReservasScreen(navController, reservasVM, userId)
                         }
                         composable("notificacionesScreen") {
-                            NotificacionesScreen(navController)
+                            NotificacionesScreen(navController, userId)
                         }
                         composable("favoritosScreen") {
                             FavoritosScreen(navController, userId)

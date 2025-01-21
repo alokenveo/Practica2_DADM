@@ -7,11 +7,13 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import unex.cum.reservasgo_dadm.data.model.Restaurante
 import unex.cum.reservasgo_dadm.data.responses.ApiResponseFavoritos
+import unex.cum.reservasgo_dadm.data.responses.ApiResponseNotificaciones
 import unex.cum.reservasgo_dadm.data.responses.ApiResponseReservas
 import unex.cum.reservasgo_dadm.data.responses.ApiResponseRestaurantes
 import unex.cum.reservasgo_dadm.data.responses.EsFavoritoResponse
 import unex.cum.reservasgo_dadm.data.responses.FavoritoResponse
 import unex.cum.reservasgo_dadm.data.responses.LoginResponse
+import unex.cum.reservasgo_dadm.data.responses.NotificacionResponse
 import unex.cum.reservasgo_dadm.data.responses.RegisterResponse
 import unex.cum.reservasgo_dadm.data.responses.ReservaResponse
 import unex.cum.reservasgo_dadm.data.responses.RestauranteResponse
@@ -78,6 +80,16 @@ interface ReservasGoAPI {
 
     @GET("reservasGo/ReservasGoAPI/v1/?op=obtenerUsuarioPorId")
     suspend fun obtenerUsuarioPorId(@Query("id_usuario") idUsuario: Int): UsuarioResponse
+
+    @GET("reservasGo/ReservasGoAPI/v1/?op=obtenerNotificaciones")
+    suspend fun obtenerNotificaciones(@Query("id_usuario") idUsuario: Int):ApiResponseNotificaciones
+
+    @FormUrlEncoded
+    @POST("reservasGo/ReservasGoAPI/v1/?op=crearNotificacion")
+    suspend fun crearNotificacion(
+        @Field("id_usuario") idUsuario: Int,
+        @Field("mensaje") mensaje: String
+    ): NotificacionResponse
 }
 
 

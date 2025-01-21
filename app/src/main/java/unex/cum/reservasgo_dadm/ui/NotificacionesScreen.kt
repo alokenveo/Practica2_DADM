@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Assignment
@@ -26,19 +27,35 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 import unex.cum.reservasgo_dadm.ui.cards.NotificacionCard
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVM
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVMFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificacionesScreen(navController: NavHostController){
-Scaffold(
+fun NotificacionesScreen(
+    navController: NavHostController,
+    usuarioId:Int,
+    notificacionesVM: NotificacionesVM = viewModel(factory = NotificacionesVMFactory())
+) {
+    val notificaciones by notificacionesVM.notificaciones.collectAsState()
+
+    LaunchedEffect (Unit){
+        notificacionesVM.obtenerNotificaciones(usuarioId)
+    }
+
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = {
@@ -128,8 +145,8 @@ Scaffold(
                 .padding(innerPadding)
                 .fillMaxWidth()
         ) {
-            items(20) { index ->
-                NotificacionCard(index)
+            items(notificaciones) { notificacion ->
+                NotificacionCard(notificacion)
             }
         }
     }

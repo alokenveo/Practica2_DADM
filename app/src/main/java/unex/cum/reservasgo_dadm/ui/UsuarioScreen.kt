@@ -39,6 +39,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -64,18 +66,17 @@ fun UsuarioScreen(
     usuarioId:Int,
     usuarioVM: UsuarioVM = viewModel(factory = UsuarioVMFactory())
 ) {
-    val usuario= remember { mutableStateOf<Usuario?>(null) }
+    val usuario by usuarioVM.usuario.collectAsState()
 
-    LaunchedEffect (Unit){
+    LaunchedEffect(Unit) {
         usuarioVM.getUsuario(usuarioId)
-        usuario.value= usuarioVM.usuario.value
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Notificaciones")
+                    Text("Panel de Usuario")
                 },
                 navigationIcon = {
                     Row(
@@ -173,13 +174,13 @@ fun UsuarioScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Nombre completo", fontSize = 12.sp)
-                    TextField(value = usuario.value?.nombre ?: "", onValueChange = {})
+                    TextField(value = usuario?.nombre ?: "", onValueChange = {}, enabled = false)
 
                     Text(text = "Correo Electrónico", fontSize = 12.sp)
-                    TextField(value = usuario.value?.email ?: "", onValueChange = {})
+                    TextField(value = usuario?.email ?: "", onValueChange = {}, enabled = false)
 
                     Text(text = "Dirección", fontSize = 12.sp)
-                    TextField(value = usuario.value?.direccion ?: "", onValueChange = {})
+                    TextField(value = usuario?.direccion ?: "", onValueChange = {}, enabled = false)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

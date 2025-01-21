@@ -1,12 +1,14 @@
 package unex.cum.reservasgo_dadm.data.repository
 
 import android.util.Log
+import unex.cum.reservasgo_dadm.data.model.Notificacion
 import unex.cum.reservasgo_dadm.data.model.Reserva
 import unex.cum.reservasgo_dadm.data.model.Restaurante
 import unex.cum.reservasgo_dadm.data.model.Usuario
 import unex.cum.reservasgo_dadm.data.responses.ApiResponseFavoritos
 import unex.cum.reservasgo_dadm.data.responses.FavoritoResponse
 import unex.cum.reservasgo_dadm.data.responses.LoginResponse
+import unex.cum.reservasgo_dadm.data.responses.NotificacionResponse
 import unex.cum.reservasgo_dadm.data.responses.RegisterResponse
 import unex.cum.reservasgo_dadm.data.responses.ReservaResponse
 import unex.cum.reservasgo_dadm.network.ReservasGoAPI
@@ -59,6 +61,15 @@ class ReservasGoRepository(private val api: ReservasGoAPI) {
     suspend fun getUsuario(idUsuario:Int):Usuario{
         val response=api.obtenerUsuarioPorId(idUsuario)
         return response.usuario!!
+    }
+
+    suspend fun getNotificaciones(idUsuario: Int):List<Notificacion>{
+        val response=api.obtenerNotificaciones(idUsuario)
+        return response.notificaciones?: emptyList()
+    }
+
+    suspend fun crearNotificacion(idUsuario: Int, mensaje: String):NotificacionResponse{
+        return api.crearNotificacion(idUsuario, mensaje)
     }
 }
 

@@ -41,6 +41,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,14 +77,15 @@ fun RestauranteScreen(
     var restaurante by remember { mutableStateOf<Restaurante?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var hacerReserva by remember { mutableStateOf(false) }
-    val esFavorito = remember { mutableStateOf(false) }
+
+    val esFavorito by favoritosVM.esFavoritoResult.collectAsState()
+
     val reservasVM: ReservaVM = viewModel(factory = ReservaVMFactory())
 
     LaunchedEffect(restauranteId) {
         val repo = ReservasGoRepository(RetrofitClient.api)
         restaurante = repo.obtenerRestaurantePorId(restauranteId)
-        favoritosVM.esFavorito(usuarioId, restaurante!!.id_restaurante)
-        esFavorito.value = favoritosVM.esFavoritoResult.value
+        favoritosVM.esFavorito(usuarioId,restauranteId)
         isLoading = false
     }
 
@@ -244,7 +246,7 @@ fun RestauranteScreen(
                                 Row {
                                     IconButton(
                                         onClick = {
-                                            if (esFavorito.value == false) {
+                                            if (!esFavorito) {
                                                 favoritosVM.agregarFavorito(
                                                     usuarioId,
                                                     restauranteId
@@ -258,7 +260,7 @@ fun RestauranteScreen(
                                         }
                                     ) {
                                         Icon(
-                                            if (esFavorito.value) Icons.Default.Star else Icons.Default.StarOutline,
+                                            if (esFavorito) Icons.Default.Star else Icons.Default.StarOutline,
                                             contentDescription = "Favoritos"
                                         )
                                     }

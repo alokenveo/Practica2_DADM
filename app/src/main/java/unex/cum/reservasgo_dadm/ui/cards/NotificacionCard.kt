@@ -19,9 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import unex.cum.reservasgo_dadm.R
+import unex.cum.reservasgo_dadm.data.model.Notificacion
 
 @Composable
-fun NotificacionCard(index: Int) {
+fun NotificacionCard(notificacion: Notificacion) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,13 +36,13 @@ fun NotificacionCard(index: Int) {
             .clickable(onClick = {})
     ) {
         Text(
-            text = "Notificacion ${index + 1}",
+            text = notificacion.fecha_envio,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(5.dp)
         )
         Text(
-            text = "Breve descripción de la notificacion",
+            text = notificacion.mensaje,
             fontSize = 12.sp,
             modifier = Modifier.padding(5.dp)
         )

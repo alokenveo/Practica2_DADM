@@ -1,5 +1,6 @@
 package unex.cum.reservasgo_dadm.data.responses
 
+import unex.cum.reservasgo_dadm.data.model.Notificacion
 import unex.cum.reservasgo_dadm.data.model.Reserva
 import unex.cum.reservasgo_dadm.data.model.Restaurante
 import unex.cum.reservasgo_dadm.data.model.Usuario
@@ -59,4 +60,15 @@ data class UsuarioResponse(
     val error:Boolean,
     val mensaje: String?,
     val usuario: Usuario?=null
+)
+
+data class ApiResponseNotificaciones(
+    val error:Boolean,
+    val mensaje: String?,
+    val notificaciones:List<Notificacion>?=null
+)
+
+data class NotificacionResponse(
+    val error: Boolean,
+    val mensaje: String
 )

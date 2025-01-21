@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.platform.LocalContext
@@ -32,9 +33,15 @@ import unex.cum.reservasgo_dadm.data.model.Reserva
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 import unex.cum.reservasgo_dadm.viewmodel.ReservaVM
 import java.util.Calendar
+import java.util.Locale
 
 @Composable
-fun ReservaScreen(reservaVM: ReservaVM, usuarioId: Int, restauranteId: Int, onReservaTerminada: () -> Unit) {
+fun ReservaScreen(
+    reservaVM: ReservaVM,
+    usuarioId: Int,
+    restauranteId: Int,
+    onReservaTerminada: () -> Unit
+) {
     // Estados para manejar la entrada de datos
     var cantidadComensales by remember { mutableStateOf(1) }
     var fechaSeleccionada by remember { mutableStateOf("") }
@@ -147,7 +154,17 @@ fun ReservaScreen(reservaVM: ReservaVM, usuarioId: Int, restauranteId: Int, onRe
 
         Button(
             onClick = {
-                val fechaCompleta = "$fechaSeleccionada $horaSeleccionada:00"
+                val fechaCompleta = String.format(
+                    Locale.US,
+                    "%04d-%02d-%02d %02d:%02d:%02d",
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.DAY_OF_MONTH),
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    0
+                )
+                Log.d("FECHA RESERVA", "LA FECHA ES $fechaCompleta")
                 reservaVM.hacerReserva(usuarioId, restauranteId, fechaCompleta, cantidadComensales)
                 onReservaTerminada()
             },
