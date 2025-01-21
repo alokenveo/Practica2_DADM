@@ -30,12 +30,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.platform.LocalContext
 import unex.cum.reservasgo_dadm.data.model.Reserva
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
+import unex.cum.reservasgo_dadm.viewmodel.ReservaVM
 import java.util.Calendar
 
 @Composable
-fun ReservaScreen() {
+fun ReservaScreen(reservaVM: ReservaVM, usuarioId: Int, restauranteId: Int, onReservaTerminada: () -> Unit) {
     // Estados para manejar la entrada de datos
-    var nombre by remember { mutableStateOf("") }
     var cantidadComensales by remember { mutableStateOf(1) }
     var fechaSeleccionada by remember { mutableStateOf("") }
     var horaSeleccionada by remember { mutableStateOf("") }
@@ -52,7 +52,7 @@ fun ReservaScreen() {
             context,
             { _, year, month, dayOfMonth ->
                 fechaSeleccionada = "$dayOfMonth/${month + 1}/$year"
-                mostrarDatePicker.value = false // Ocultar el DatePicker
+                mostrarDatePicker.value = false
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -66,7 +66,7 @@ fun ReservaScreen() {
             context,
             { _, hourOfDay, minute ->
                 horaSeleccionada = "$hourOfDay:$minute"
-                mostrarTimePicker.value = false // Ocultar el TimePicker
+                mostrarTimePicker.value = false
             },
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE),
@@ -78,17 +78,8 @@ fun ReservaScreen() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp) // Espaciado entre elementos
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Campo de nombre
-        Text("Nombre", style = MaterialTheme.typography.titleMedium)
-        TextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text("Escribe tu nombre") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
         // Campo para la cantidad de comensales
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -153,6 +144,19 @@ fun ReservaScreen() {
                 Icon(Icons.Default.ArrowDropDown, contentDescription = "Seleccionar hora")
             }
         }
+
+        Button(
+            onClick = {
+                val fechaCompleta = "$fechaSeleccionada $horaSeleccionada:00"
+                reservaVM.hacerReserva(usuarioId, restauranteId, fechaCompleta, cantidadComensales)
+                onReservaTerminada()
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorApp
+            )
+        ) {
+            Text("Terminar Reserva")
+        }
     }
 }
 
@@ -163,7 +167,13 @@ fun InfoReservaScreen(reserva: Reserva, nombreUsuario: String, nombreRestaurante
         Text(text = "Reserva de: $nombreUsuario", style = MaterialTheme.typography.titleMedium)
         Text(text = "Restaurante: $nombreRestaurante", style = MaterialTheme.typography.bodyMedium)
         Text(text = "Fecha: ${reserva.fecha_reserva}", style = MaterialTheme.typography.bodyMedium)
-        Text(text = "Personas: ${reserva.numero_personas}", style = MaterialTheme.typography.bodyMedium)
-        Text(text = "Estado: ${reserva.estado_reserva}", style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = "Personas: ${reserva.numero_personas}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text(
+            text = "Estado: ${reserva.estado_reserva}",
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }

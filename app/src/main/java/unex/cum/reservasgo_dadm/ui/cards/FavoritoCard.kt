@@ -20,9 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
+import unex.cum.reservasgo_dadm.data.model.Favorito
+import unex.cum.reservasgo_dadm.data.model.Restaurante
 
 @Composable
-fun FavoritoCard(index: Int, navController: NavHostController) {
+fun FavoritoCard(favorito: Restaurante, navController: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -34,7 +36,7 @@ fun FavoritoCard(index: Int, navController: NavHostController) {
             )
             .border(BorderStroke(2.dp, Color.Gray))
             .clickable(onClick = {
-                navController.navigate("restauranteScreen")
+                navController.navigate("restauranteScreen/${favorito.id_restaurante}")
             })
     ) {
         Image(
@@ -45,12 +47,12 @@ fun FavoritoCard(index: Int, navController: NavHostController) {
         )
         Column() {
             Text(
-                text = "Favorito ${index + 1}",
+                text = favorito.nombre,
                 fontSize=18.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text="Breve descripción del favorito",
+                text=favorito.direccion,
                 fontSize = 12.sp
             )
         }

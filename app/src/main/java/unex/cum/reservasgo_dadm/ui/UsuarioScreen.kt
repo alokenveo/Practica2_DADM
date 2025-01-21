@@ -38,6 +38,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -46,13 +49,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
+import unex.cum.reservasgo_dadm.data.model.Usuario
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
+import unex.cum.reservasgo_dadm.viewmodel.UsuarioVM
+import unex.cum.reservasgo_dadm.viewmodel.UsuarioVMFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsuarioScreen(navController: NavHostController) {
+fun UsuarioScreen(
+    navController: NavHostController,
+    usuarioId:Int,
+    usuarioVM: UsuarioVM = viewModel(factory = UsuarioVMFactory())
+) {
+    val usuario= remember { mutableStateOf<Usuario?>(null) }
+
+    LaunchedEffect (Unit){
+        usuarioVM.getUsuario(usuarioId)
+        usuario.value= usuarioVM.usuario.value
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -155,13 +173,13 @@ fun UsuarioScreen(navController: NavHostController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Nombre completo", fontSize = 12.sp)
-                    TextField(value = "", onValueChange = {})
+                    TextField(value = usuario.value?.nombre ?: "", onValueChange = {})
 
                     Text(text = "Correo Electrónico", fontSize = 12.sp)
-                    TextField(value = "", onValueChange = {})
+                    TextField(value = usuario.value?.email ?: "", onValueChange = {})
 
-                    Text(text = "Contraseña", fontSize = 12.sp)
-                    TextField(value = "", onValueChange = {})
+                    Text(text = "Dirección", fontSize = 12.sp)
+                    TextField(value = usuario.value?.direccion ?: "", onValueChange = {})
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

@@ -7,9 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -19,7 +16,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import kotlinx.coroutines.launch
 import unex.cum.reservasgo_dadm.network.SessionManager
-import unex.cum.reservasgo_dadm.ui.theme.ReservasGO_DADMTheme
 import unex.cum.reservasgo_dadm.ui.FavoritosScreen
 import unex.cum.reservasgo_dadm.ui.LoginScreen
 import unex.cum.reservasgo_dadm.ui.MainScreen
@@ -28,6 +24,9 @@ import unex.cum.reservasgo_dadm.ui.RegisterScreen
 import unex.cum.reservasgo_dadm.ui.ReservasScreen
 import unex.cum.reservasgo_dadm.ui.RestauranteScreen
 import unex.cum.reservasgo_dadm.ui.UsuarioScreen
+import unex.cum.reservasgo_dadm.ui.theme.ReservasGO_DADMTheme
+import unex.cum.reservasgo_dadm.viewmodel.LoginVM
+import unex.cum.reservasgo_dadm.viewmodel.LoginVMFactory
 import unex.cum.reservasgo_dadm.viewmodel.ReservasVM
 import unex.cum.reservasgo_dadm.viewmodel.ReservasVMFactory
 
@@ -35,46 +34,50 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sessionManager = SessionManager(this) // Inicializar SessionManager
-        var userId by mutableStateOf(0) // MutableState para actualizar la UI
+        val sessionManager = SessionManager(this)
+        var userId: Int = 0
 
-        // Recuperar el ID del usuario en una corrutina
         lifecycleScope.launch {
-            userId = sessionManager.getUserId()
+            userId=sessionManager.getUserId()
         }
 
         enableEdgeToEdge()
+
         setContent {
             ReservasGO_DADMTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "loginScreen") {
                         composable("mainScreen") {
-                            MainScreen(navController)
+                            MainScreen(navController, userId)
                         }
-                        composable("reservasScreen/{idUsuario}") { backStackEntry ->
+                        composable("reservasScreen") {
                             val reservasVM: ReservasVM = viewModel(factory = ReservasVMFactory())
+                            Log.d("USUARIO","EL USER ID ES $userId")
                             ReservasScreen(navController, reservasVM, userId)
                         }
                         composable("notificacionesScreen") {
                             NotificacionesScreen(navController)
                         }
                         composable("favoritosScreen") {
-                            FavoritosScreen(navController)
+                            FavoritosScreen(navController, userId)
                         }
                         composable("usuarioScreen") {
-                            UsuarioScreen(navController)
+                            UsuarioScreen(navController, userId)
                         }
-                        composable("restauranteScreen/{restauranteId}",
+                        composable(
+                            "restauranteScreen/{restauranteId}",
                             arguments = listOf(navArgument("restauranteId") {
                                 type = NavType.IntType
                             })
-                        ) {backStackEntry ->
-                            val restauranteId=backStackEntry.arguments?.getInt("restauranteId")?:0
-                            RestauranteScreen(navController,restauranteId)
+                        ) {
+                            val restauranteId = it.arguments?.getInt("restauranteId") ?: 0
+                            RestauranteScreen(navController,userId, restauranteId)
                         }
                         composable("loginScreen") {
-                            LoginScreen(navController)
+                            val loginVM: LoginVM =
+                                viewModel(factory = LoginVMFactory(sessionManager))
+                            LoginScreen(navController, loginVM)
                         }
                         composable("registerScreen") {
                             RegisterScreen(navController)
@@ -85,6 +88,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-

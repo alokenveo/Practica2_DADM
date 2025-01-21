@@ -22,7 +22,9 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -45,11 +47,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import unex.cum.reservasgo_dadm.R
@@ -57,18 +59,31 @@ import unex.cum.reservasgo_dadm.data.model.Restaurante
 import unex.cum.reservasgo_dadm.data.repository.ReservasGoRepository
 import unex.cum.reservasgo_dadm.network.RetrofitClient
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
+import unex.cum.reservasgo_dadm.viewmodel.FavoritosVM
+import unex.cum.reservasgo_dadm.viewmodel.FavoritosVMFactory
+import unex.cum.reservasgo_dadm.viewmodel.ReservaVM
+import unex.cum.reservasgo_dadm.viewmodel.ReservaVMFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RestauranteScreen(navController: NavHostController, restauranteId: Int) {
+fun RestauranteScreen(
+    navController: NavHostController,
+    usuarioId: Int,
+    restauranteId: Int,
+    favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory())
+) {
 
     var restaurante by remember { mutableStateOf<Restaurante?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     var hacerReserva by remember { mutableStateOf(false) }
+    val esFavorito = remember { mutableStateOf(false) }
+    val reservasVM: ReservaVM = viewModel(factory = ReservaVMFactory())
 
     LaunchedEffect(restauranteId) {
         val repo = ReservasGoRepository(RetrofitClient.api)
         restaurante = repo.obtenerRestaurantePorId(restauranteId)
+        favoritosVM.esFavorito(usuarioId, restaurante!!.id_restaurante)
+        esFavorito.value = favoritosVM.esFavoritoResult.value
         isLoading = false
     }
 
@@ -173,9 +188,9 @@ fun RestauranteScreen(navController: NavHostController, restauranteId: Int) {
                     ) {
                         item {
                             Spacer(modifier = Modifier.height(20.dp))
-                            Log.d("URL_FOTO","url: ${res.foto}")
+                            Log.d("URL_FOTO", "url: ${res.foto}")
                             Image(
-                                painter = rememberAsyncImagePainter(model=res.foto),
+                                painter = rememberAsyncImagePainter(model = res.foto),
                                 contentDescription = "Foto del restaurante",
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -227,10 +242,26 @@ fun RestauranteScreen(navController: NavHostController, restauranteId: Int) {
                                     )
                                 }
                                 Row {
-                                    Icon(
-                                        Icons.Default.StarOutline,
-                                        contentDescription = "Marcar como favorito"
-                                    )
+                                    IconButton(
+                                        onClick = {
+                                            if (esFavorito.value == false) {
+                                                favoritosVM.agregarFavorito(
+                                                    usuarioId,
+                                                    restauranteId
+                                                )
+                                            } else {
+                                                favoritosVM.eliminarFavorito(
+                                                    usuarioId,
+                                                    restauranteId
+                                                )
+                                            }
+                                        }
+                                    ) {
+                                        Icon(
+                                            if (esFavorito.value) Icons.Default.Star else Icons.Default.StarOutline,
+                                            contentDescription = "Favoritos"
+                                        )
+                                    }
                                     Text(
                                         fontSize = 12.sp,
                                         text = "Añadir a favoritos",
@@ -269,17 +300,14 @@ fun RestauranteScreen(navController: NavHostController, restauranteId: Int) {
             AlertDialog(
                 onDismissRequest = { hacerReserva = false },
                 title = { Text("Reservar restaurante") },
-                text = { ReservaScreen() },
-                confirmButton = {
-                    Button(
-                        onClick = { hacerReserva = false },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorApp
-                        )
-                    ) {
-                        Text("Terminar Reserva")
-                    }
-                }
+                text = {
+                    ReservaScreen(
+                        reservasVM,
+                        usuarioId,
+                        restauranteId,
+                        { hacerReserva = false })
+                },
+                confirmButton = {}
             )
         }
     }

@@ -32,3 +32,31 @@ data class ApiResponseReservas(
     val mensaje: String?,
     val reservas: List<Reserva>?=null
 )
+
+data class ReservaResponse(
+    val error: Boolean,
+    val mensaje: String
+)
+
+data class ApiResponseFavoritos(
+    val error:Boolean,
+    val mensaje: String?,
+    val favoritos:List<Restaurante>?=null
+)
+
+data class FavoritoResponse(
+    val error: Boolean,
+    val mensaje: String
+)
+
+data class EsFavoritoResponse(
+    val error:Boolean,
+    val mensaje: String?,
+    val esFavorito:Boolean
+)
+
+data class UsuarioResponse(
+    val error:Boolean,
+    val mensaje: String?,
+    val usuario: Usuario?=null
+)

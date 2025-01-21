@@ -1,5 +1,6 @@
 package unex.cum.reservasgo_dadm.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -40,22 +41,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.data.model.Reserva
+import unex.cum.reservasgo_dadm.data.model.Usuario
+import unex.cum.reservasgo_dadm.data.repository.ReservasGoRepository
+import unex.cum.reservasgo_dadm.network.RetrofitClient
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 import unex.cum.reservasgo_dadm.ui.cards.ReservaCard
 import unex.cum.reservasgo_dadm.viewmodel.ReservasVM
+import unex.cum.reservasgo_dadm.viewmodel.UsuarioVM
+import unex.cum.reservasgo_dadm.viewmodel.UsuarioVMFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservasScreen(navController: NavHostController, reservasVM: ReservasVM, idUsuario: Int) {
     val reservas by reservasVM.reservas.collectAsState()
     val mensaje by reservasVM.mensaje.collectAsState()
+    val restaurante by reservasVM.restaurante.collectAsState()
 
     var reservaSeleccionada by remember { mutableStateOf<Reserva?>(null) }
+    var usuario by remember { mutableStateOf<Usuario?>(null) }
 
     LaunchedEffect(Unit) {
+        val repo = ReservasGoRepository(RetrofitClient.api)
+        usuario = repo.getUsuario(idUsuario)
         reservasVM.fetchReservas(idUsuario)
     }
 
@@ -151,26 +162,45 @@ fun ReservasScreen(navController: NavHostController, reservasVM: ReservasVM, idU
                     .fillMaxWidth()
             ) {
                 items(reservas) { reserva ->
-                    ReservaCard(
-                        reserva = reserva,
-                        nombreRestaurante = "Restaurante ${reserva.id_restaurante}", // Esto debe venir de la API
-                        imagenRestaurante = R.drawable.ic_restaurante, // Reemplazar por la imagen real
-                        onReservaClick = { reservaSeleccionada = reserva }
-                    )
+                    LaunchedEffect(reserva.id_restaurante) {
+                        reservasVM.obtenerRestaurante(reserva.id_restaurante)
+                        Log.d(
+                            "CARGA RESTAURANTE",
+                            "Restaurante con ID ${reserva.id_restaurante} cargado"
+                        )
+                    }
+
+                    // Espera a que el restaurante esté cargado
+                    restaurante?.let {
+                        Log.d("RESTAURANTE CARGADO", "Restaurante: ${it.nombre}")
+                        ReservaCard(
+                            reserva = reserva,
+                            nombreRestaurante = it.nombre,
+                            imagenRestaurante = R.drawable.ic_restaurante, // Aquí puedes poner la imagen real
+                            onReservaClick = { reservaSeleccionada = reserva }
+                        )
+                    }
                 }
             }
         }
 
         reservaSeleccionada?.let { reserva ->
+            LaunchedEffect(reserva.id_restaurante) {
+
+                reservasVM.obtenerRestaurante(reserva.id_restaurante)
+            }
+
             AlertDialog(
                 onDismissRequest = { reservaSeleccionada = null },
                 title = { Text("Detalles de la Reserva") },
                 text = {
-                    InfoReservaScreen(
-                        reserva = reserva,
-                        nombreUsuario = "Usuario ${reserva.id_usuario}", // Obtener el nombre real de la API
-                        nombreRestaurante = "Restaurante ${reserva.id_restaurante}" // Obtener el nombre real de la API
-                    )
+                    restaurante?.let {
+                        InfoReservaScreen(
+                            reserva = reserva,
+                            nombreUsuario = usuario?.nombre ?: "Señor/a X",
+                            nombreRestaurante = it.nombre
+                        )
+                    }
                 },
                 confirmButton = {
                     Button(

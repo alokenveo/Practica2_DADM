@@ -17,6 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,14 +28,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.data.model.Restaurante
+import unex.cum.reservasgo_dadm.viewmodel.FavoritosVM
+import unex.cum.reservasgo_dadm.viewmodel.FavoritosVMFactory
 
 
 @Composable
-fun RestauranteCard(restaurante: Restaurante, navController: NavHostController) {
+fun RestauranteCard(
+    restaurante: Restaurante,
+    navController: NavHostController,
+    usuarioId: Int,
+    favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory())
+) {
+    val esFavorito = remember{ mutableStateOf(false) }
+
+    LaunchedEffect (Unit){
+        favoritosVM.esFavorito(usuarioId, restaurante.id_restaurante)
+        esFavorito.value = favoritosVM.esFavoritoResult.value
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,7 +73,7 @@ fun RestauranteCard(restaurante: Restaurante, navController: NavHostController) 
             contentScale = ContentScale.Crop
         )
         Row(
-            modifier= Modifier
+            modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -62,16 +81,21 @@ fun RestauranteCard(restaurante: Restaurante, navController: NavHostController) 
             Column() {
                 Text(
                     text = restaurante.nombre,
-                    fontSize=18.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text=restaurante.descripcion,
+                    text = restaurante.descripcion,
                     fontSize = 12.sp
                 )
             }
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.StarBorder, contentDescription = "Favoritos")
+            IconButton(onClick = {
+                favoritosVM.agregarFavorito(usuarioId, restaurante.id_restaurante)
+            }) {
+                Icon(
+                    if (esFavorito.value) Icons.Outlined.Star else Icons.Default.StarBorder,
+                    contentDescription = "Favoritos"
+                )
             }
         }
     }

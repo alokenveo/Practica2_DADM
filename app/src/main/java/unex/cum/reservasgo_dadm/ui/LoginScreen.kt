@@ -41,7 +41,7 @@ import unex.cum.reservasgo_dadm.viewmodel.LoginVMFactory
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    loginVM: LoginVM = viewModel(factory = LoginVMFactory())
+    loginVM: LoginVM
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -115,7 +115,7 @@ fun LoginScreen(
             // Botón de inicio de sesión
             Button(
                 onClick = {
-                    loginVM.loginUser(email,password)
+                    loginVM.loginUser(email, password)
                 },
                 modifier = Modifier.fillMaxWidth(0.6f)
             ) {

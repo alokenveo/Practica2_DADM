@@ -16,7 +16,7 @@ class LoginVM(private val repository: ReservasGoRepository, private val sessionM
         viewModelScope.launch {
             try {
                 val response = repository.loginUser(email, password)
-                if (!response.error && response.usuario != null) {
+                if (response.usuario != null) {
                     sessionManager.saveUserId(response.usuario.id_usuario)
                     _loginResult.value = "success"
                 } else {
