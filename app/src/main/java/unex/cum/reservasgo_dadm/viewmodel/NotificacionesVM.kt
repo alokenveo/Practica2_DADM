@@ -1,5 +1,6 @@
 package unex.cum.reservasgo_dadm.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,13 +35,13 @@ class NotificacionesVM(private val repository:ReservasGoRepository):ViewModel() 
         val mensajeNoti = when (tipo) {
             "reserva" -> "Tu reserva en $datoAdicional ha sido confirmada."
             "favorito" -> "Has agregado $datoAdicional a tus favoritos."
-            "registro" -> "¡Bienvenido a ReservasGo, $datoAdicional!"
             else -> "Tienes una nueva notificación."
         }
 
         viewModelScope.launch {
             try {
                 repository.crearNotificacion(idUsuario, mensajeNoti)
+                Log.d("CREACIÓN NOTIFICACIÓN 2","El mensaje es: $mensajeNoti")
             } catch (e: Exception) {
                 _mensaje.value="Error al obtener notificaciones: ${e.message}"
             }

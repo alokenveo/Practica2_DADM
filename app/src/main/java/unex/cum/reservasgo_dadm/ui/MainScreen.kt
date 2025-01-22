@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,16 +39,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.google.android.gms.maps.model.LatLng
 import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.ui.theme.colorApp
 import unex.cum.reservasgo_dadm.ui.cards.RestauranteCard
 import unex.cum.reservasgo_dadm.viewmodel.MainVM
 import unex.cum.reservasgo_dadm.viewmodel.MainVMFactory
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.LocationServices
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
+import java.io.IOException
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,14 +70,21 @@ fun MainScreen(
     mainVM: MainVM = viewModel(factory = MainVMFactory())
 ) {
     val restaurantes by mainVM.restaurantes.collectAsState()
-    //val message by mainVM.message.collectAsState()
 
     var mostrarFiltros by remember { mutableStateOf(false) }
     var filtrosSeleccionados by remember { mutableStateOf<List<String>>(emptyList()) }
-    var ratioBusqueda by remember { mutableStateOf(5f) }
+    //val userLocation = rememberUserLocation()
+    var ratioBusqueda by remember { mutableStateOf(50f) }
 
-    var restaurantesFiltrados = restaurantes.filter { restaurante ->
-        filtrosSeleccionados.isEmpty() || filtrosSeleccionados.contains(restaurante.tipo_cocina)
+    val restaurantesFiltrados = restaurantes.filter { restaurante ->
+            filtrosSeleccionados.isEmpty() || filtrosSeleccionados.contains(restaurante.tipo_cocina)
+        /*
+        val restauranteLatLng = getLatLngFromAddress(context, restaurante.direccion)
+        val cumpleFiltroDistancia = restauranteLatLng != null && userLocation != null &&
+                calcularDistancia(userLocation, restauranteLatLng) <= ratioBusqueda
+
+        cumpleFiltroCocina && cumpleFiltroDistancia
+        */
     }
 
     Scaffold(topBar = {
@@ -198,3 +217,49 @@ fun MainScreen(
     }
 }
 
+/*
+@Composable
+fun rememberUserLocation(): LatLng? {
+    val context = LocalContext.current
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+    var userLocation by remember { mutableStateOf<LatLng?>(null) }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    userLocation = LatLng(it.latitude, it.longitude)
+                }
+            }
+        }
+    }
+
+    return userLocation
+}
+
+fun getLatLngFromAddress(context: Context, address: String): LatLng? {
+    return try {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = geocoder.getFromLocationName(address, 1)
+        addresses?.firstOrNull()?.let {
+            LatLng(it.latitude, it.longitude)
+        }
+    } catch (e: IOException) {
+        null
+    }
+}
+
+fun calcularDistancia(userLatLng: LatLng, restaurantLatLng: LatLng): Float {
+    val userLocation = Location("").apply {
+        latitude = userLatLng.latitude
+        longitude = userLatLng.longitude
+    }
+    val restaurantLocation = Location("").apply {
+        latitude = restaurantLatLng.latitude
+        longitude = restaurantLatLng.longitude
+    }
+    return userLocation.distanceTo(restaurantLocation) / 1000 // Devuelve la distancia en km
+}
+*/

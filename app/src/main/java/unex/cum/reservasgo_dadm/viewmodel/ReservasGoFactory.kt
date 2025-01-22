@@ -1,15 +1,16 @@
 package unex.cum.reservasgo_dadm.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import unex.cum.reservasgo_dadm.data.repository.ReservasGoRepository
 import unex.cum.reservasgo_dadm.network.RetrofitClient
 import unex.cum.reservasgo_dadm.network.SessionManager
 
-class MainVMFactory: ViewModelProvider.Factory {
+class MainVMFactory : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        val repository= ReservasGoRepository(RetrofitClient.api)
+        val repository = ReservasGoRepository(RetrofitClient.api)
         return MainVM(repository) as T
     }
 }
@@ -38,19 +39,23 @@ class ReservasVMFactory : ViewModelProvider.Factory {
     }
 }
 
-class ReservaVMFactory : ViewModelProvider.Factory {
+class ReservaVMFactory(
+    private val application: Application,
+    private val notificacionesVM: NotificacionesVM
+) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val repository = ReservasGoRepository(RetrofitClient.api)
-        return ReservaVM(repository) as T
+        return ReservaVM(repository, notificacionesVM, application) as T
     }
 }
 
-class FavoritosVMFactory : ViewModelProvider.Factory {
+class FavoritosVMFactory(private val notificacionesVM: NotificacionesVM) :
+    ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val repository = ReservasGoRepository(RetrofitClient.api)
-        return FavoritosVM(repository) as T
+        return FavoritosVM(repository, notificacionesVM) as T
     }
 }
 

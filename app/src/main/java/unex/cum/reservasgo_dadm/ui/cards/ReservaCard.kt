@@ -6,8 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +24,7 @@ import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.data.model.Reserva
 
 @Composable
-fun ReservaCard(reserva: Reserva, nombreRestaurante: String, imagenRestaurante: Int, onReservaClick: () -> Unit) {
+fun ReservaCard(reserva: Reserva, nombreRestaurante: String, onReservaClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -36,11 +38,11 @@ fun ReservaCard(reserva: Reserva, nombreRestaurante: String, imagenRestaurante: 
             .clickable(onClick = onReservaClick)
     ) {
         Image(
-            painter = painterResource(id = imagenRestaurante),
+            painter = painterResource(id = R.drawable.ic_reserva),
             contentDescription = "Logo de la app",
-            modifier = Modifier.fillMaxHeight(),
-            contentScale = ContentScale.Crop
+            modifier = Modifier.height(70.dp)
         )
+        Spacer(modifier = Modifier.height(8.dp))
         Column() {
             Text(
                 text = "Reserva ${reserva.id_reserva}",

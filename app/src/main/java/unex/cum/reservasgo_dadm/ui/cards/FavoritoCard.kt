@@ -6,8 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,11 +42,11 @@ fun FavoritoCard(favorito: Restaurante, navController: NavHostController) {
             })
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_restaurante),
+            painter = painterResource(id = R.drawable.ic_favorito),
             contentDescription = "Logo de la app",
-            modifier = Modifier.fillMaxHeight(),
-            contentScale = ContentScale.Crop
+            modifier = Modifier.height(70.dp)
         )
+        Spacer(modifier = Modifier.height(8.dp))
         Column() {
             Text(
                 text = favorito.nombre,

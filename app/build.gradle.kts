@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "unex.cum.reservasgo_dadm"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "unex.cum.reservasgo_dadm"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.storage)
     implementation(libs.androidx.ui.test.android)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,6 +72,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.navigation:navigation-compose:2.8.4")
     implementation("androidx.compose.material:material-icons-extended:1.5.1")
+    implementation("androidx.work:work-runtime-ktx:2.10.0")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -81,5 +83,9 @@ dependencies {
 
     //Data Store
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    //Google Maps
+    implementation("com.google.maps.android:maps-compose:2.0.0")
+    implementation("com.google.android.gms:play-services-maps:18.0.2")
 
 }

@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:usesCleartextTraffic="true"
@@ -15,6 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReservasGO_DADM"
         tools:targetApi="31">
+
+        <!-- Agrega tu API Key aquí -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAYk4C05RQG8NP-ekkFiT32ObohXAynLh8" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

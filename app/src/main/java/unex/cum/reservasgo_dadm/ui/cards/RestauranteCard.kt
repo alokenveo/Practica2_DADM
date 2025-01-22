@@ -36,15 +36,20 @@ import unex.cum.reservasgo_dadm.R
 import unex.cum.reservasgo_dadm.data.model.Restaurante
 import unex.cum.reservasgo_dadm.viewmodel.FavoritosVM
 import unex.cum.reservasgo_dadm.viewmodel.FavoritosVMFactory
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVM
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVMFactory
+import unex.cum.reservasgo_dadm.viewmodel.ReservaVM
+import unex.cum.reservasgo_dadm.viewmodel.ReservaVMFactory
 
 
 @Composable
 fun RestauranteCard(
     restaurante: Restaurante,
     navController: NavHostController,
-    usuarioId: Int,
-    favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory())
+    usuarioId: Int
 ) {
+    val notificacionesVM: NotificacionesVM = viewModel(factory = NotificacionesVMFactory())
+    val favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory(notificacionesVM))
 
     Column(
         modifier = Modifier

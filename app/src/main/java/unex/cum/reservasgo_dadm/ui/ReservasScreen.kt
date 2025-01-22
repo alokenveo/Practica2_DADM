@@ -176,7 +176,6 @@ fun ReservasScreen(navController: NavHostController, reservasVM: ReservasVM, idU
                         ReservaCard(
                             reserva = reserva,
                             nombreRestaurante = it.nombre,
-                            imagenRestaurante = R.drawable.ic_restaurante, // Aquí puedes poner la imagen real
                             onReservaClick = { reservaSeleccionada = reserva }
                         )
                     }

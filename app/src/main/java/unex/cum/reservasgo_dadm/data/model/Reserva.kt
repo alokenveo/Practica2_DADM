@@ -5,8 +5,6 @@ data class Reserva(
     val id_usuario: Int,
     val id_restaurante: Int,
     val fecha_reserva: String,
-    val numero_personas: Int,
-    val estado_reserva: String,
-    val comentarios: String?
+    val numero_personas: Int
 )
 

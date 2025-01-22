@@ -22,6 +22,7 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -46,12 +48,12 @@ import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVMFactory
 @Composable
 fun NotificacionesScreen(
     navController: NavHostController,
-    usuarioId:Int,
+    usuarioId: Int,
     notificacionesVM: NotificacionesVM = viewModel(factory = NotificacionesVMFactory())
 ) {
     val notificaciones by notificacionesVM.notificaciones.collectAsState()
 
-    LaunchedEffect (Unit){
+    LaunchedEffect(Unit) {
         notificacionesVM.obtenerNotificaciones(usuarioId)
     }
 
@@ -145,8 +147,21 @@ fun NotificacionesScreen(
                 .padding(innerPadding)
                 .fillMaxWidth()
         ) {
-            items(notificaciones) { notificacion ->
-                NotificacionCard(notificacion)
+            if (notificaciones.isEmpty()) {
+                item {
+                    Text(
+                        text = "No hay restaurantes disponibles",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else {
+                items(notificaciones) { notificacion ->
+                    NotificacionCard(notificacion)
+                }
             }
         }
     }

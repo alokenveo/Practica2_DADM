@@ -43,15 +43,17 @@ import unex.cum.reservasgo_dadm.ui.theme.colorApp
 import unex.cum.reservasgo_dadm.ui.cards.FavoritoCard
 import unex.cum.reservasgo_dadm.viewmodel.FavoritosVM
 import unex.cum.reservasgo_dadm.viewmodel.FavoritosVMFactory
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVM
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVMFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritosScreen(
     navController: NavHostController,
-    usuarioId: Int,
-    favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory())
+    usuarioId: Int
 ) {
-
+    val notificacionesVM: NotificacionesVM = viewModel(factory = NotificacionesVMFactory())
+    val favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory(notificacionesVM))
     val favoritos by favoritosVM.favoritos.collectAsState()
 
     LaunchedEffect(Unit) {

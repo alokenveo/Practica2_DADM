@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.ButtonDefaults
@@ -165,7 +166,7 @@ fun ReservaScreen(
                     0
                 )
                 Log.d("FECHA RESERVA", "LA FECHA ES $fechaCompleta")
-                reservaVM.hacerReserva(usuarioId, restauranteId, fechaCompleta, cantidadComensales)
+                reservaVM.hacerReserva(usuarioId, restauranteId, fechaCompleta,cantidadComensales, context)
                 onReservaTerminada()
             },
             colors = ButtonDefaults.buttonColors(
@@ -186,10 +187,6 @@ fun InfoReservaScreen(reserva: Reserva, nombreUsuario: String, nombreRestaurante
         Text(text = "Fecha: ${reserva.fecha_reserva}", style = MaterialTheme.typography.bodyMedium)
         Text(
             text = "Personas: ${reserva.numero_personas}",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Text(
-            text = "Estado: ${reserva.estado_reserva}",
             style = MaterialTheme.typography.bodyMedium
         )
     }

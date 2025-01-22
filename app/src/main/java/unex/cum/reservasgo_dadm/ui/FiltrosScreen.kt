@@ -23,7 +23,7 @@ fun FiltrosScreen(
         }
     }
 
-    var ratioBusqueda by remember { mutableStateOf(5f) }
+    var ratioBusqueda by remember { mutableStateOf(50f) }
 
 
     Column(
@@ -93,5 +93,4 @@ fun FiltrosScreen(
         }
 
     }
-
 }
