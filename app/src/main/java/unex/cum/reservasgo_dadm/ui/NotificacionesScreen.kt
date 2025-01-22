@@ -150,7 +150,7 @@ fun NotificacionesScreen(
             if (notificaciones.isEmpty()) {
                 item {
                     Text(
-                        text = "No hay restaurantes disponibles",
+                        text = "No tienes ninguna notificación",
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),

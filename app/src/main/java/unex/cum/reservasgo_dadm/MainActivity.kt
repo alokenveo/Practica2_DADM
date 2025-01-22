@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +28,8 @@ import unex.cum.reservasgo_dadm.ui.UsuarioScreen
 import unex.cum.reservasgo_dadm.ui.theme.ReservasGO_DADMTheme
 import unex.cum.reservasgo_dadm.viewmodel.LoginVM
 import unex.cum.reservasgo_dadm.viewmodel.LoginVMFactory
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVM
+import unex.cum.reservasgo_dadm.viewmodel.NotificacionesVMFactory
 import unex.cum.reservasgo_dadm.viewmodel.ReservasVM
 import unex.cum.reservasgo_dadm.viewmodel.ReservasVMFactory
 
@@ -36,6 +39,8 @@ class MainActivity : ComponentActivity() {
 
         val sessionManager = SessionManager(this)
         var userId: Int = 0
+        val notificacionesVM: NotificacionesVM by viewModels { NotificacionesVMFactory() }
+
 
         lifecycleScope.launch {
             userId=sessionManager.getUserId()
@@ -72,7 +77,7 @@ class MainActivity : ComponentActivity() {
                             })
                         ) {
                             val restauranteId = it.arguments?.getInt("restauranteId") ?: 0
-                            RestauranteScreen(navController,userId, restauranteId)
+                            RestauranteScreen(navController,userId, restauranteId, notificacionesVM)
                         }
                         composable("loginScreen") {
                             val loginVM: LoginVM =

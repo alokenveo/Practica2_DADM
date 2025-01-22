@@ -38,11 +38,14 @@ class NotificacionesVM(private val repository:ReservasGoRepository):ViewModel() 
             else -> "Tienes una nueva notificación."
         }
 
+        Log.d("NotificacionesVM", "Llamando a crearNotificacion con mensaje: $mensajeNoti")
+
         viewModelScope.launch {
             try {
                 repository.crearNotificacion(idUsuario, mensajeNoti)
-                Log.d("CREACIÓN NOTIFICACIÓN 2","El mensaje es: $mensajeNoti")
+                Log.d("NotificacionesVM", "Notificación creada exitosamente")
             } catch (e: Exception) {
+                Log.e("NotificacionesVM", "Error al crear notificación: ${e.message}")
                 _mensaje.value="Error al obtener notificaciones: ${e.message}"
             }
         }

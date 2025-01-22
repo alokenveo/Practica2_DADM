@@ -29,7 +29,7 @@ fun ReservaCard(reserva: Reserva, nombreRestaurante: String, onReservaClick: () 
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                start=16.dp,
+                start = 16.dp,
                 top = 16.dp,
                 end = 16.dp,
                 bottom = 8.dp
@@ -40,17 +40,23 @@ fun ReservaCard(reserva: Reserva, nombreRestaurante: String, onReservaClick: () 
         Image(
             painter = painterResource(id = R.drawable.ic_reserva),
             contentDescription = "Logo de la app",
-            modifier = Modifier.height(70.dp)
+            modifier = Modifier
+                .height(70.dp)
+                .padding(end = 16.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Column() {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(top = 8.dp)
+        ) {
             Text(
                 text = "Reserva ${reserva.id_reserva}",
-                fontSize=18.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text="Reserva hecha en el restaurante '${nombreRestaurante}'",
+                text = "Reserva hecha en el restaurante '${nombreRestaurante}'",
                 fontSize = 12.sp
             )
         }

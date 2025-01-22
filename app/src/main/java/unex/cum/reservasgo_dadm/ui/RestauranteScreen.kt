@@ -75,7 +75,8 @@ import unex.cum.reservasgo_dadm.viewmodel.ReservaVMFactory
 fun RestauranteScreen(
     navController: NavHostController,
     usuarioId: Int,
-    restauranteId: Int
+    restauranteId: Int,
+    notificacionesVM: NotificacionesVM
 ) {
     var restaurante by remember { mutableStateOf<Restaurante?>(null) }
     var isLoading by remember { mutableStateOf(true) }
@@ -84,7 +85,6 @@ fun RestauranteScreen(
     val context = LocalContext.current
     val application = context.applicationContext as Application
 
-    val notificacionesVM: NotificacionesVM = viewModel(factory = NotificacionesVMFactory())
     val reservasVM: ReservaVM = viewModel(factory = ReservaVMFactory(application, notificacionesVM))
     val favoritosVM: FavoritosVM = viewModel(factory = FavoritosVMFactory(notificacionesVM))
 
@@ -203,7 +203,7 @@ fun RestauranteScreen(
                                 painter = rememberAsyncImagePainter(model = res.foto),
                                 contentDescription = "Foto del restaurante",
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .height(200.dp)
                                     .padding(bottom = 8.dp),
                                 contentScale = ContentScale.Crop
                             )

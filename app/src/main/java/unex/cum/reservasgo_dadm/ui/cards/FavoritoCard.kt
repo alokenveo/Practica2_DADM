@@ -44,9 +44,10 @@ fun FavoritoCard(favorito: Restaurante, navController: NavHostController) {
         Image(
             painter = painterResource(id = R.drawable.ic_favorito),
             contentDescription = "Logo de la app",
-            modifier = Modifier.height(70.dp)
+            modifier = Modifier
+                .height(70.dp)
+                .padding(end = 16.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Column() {
             Text(
                 text = favorito.nombre,

@@ -56,8 +56,13 @@ import com.google.android.gms.location.LocationServices
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import unex.cum.reservasgo_dadm.data.model.Restaurante
 import java.io.IOException
 import java.util.Locale
 
@@ -70,21 +75,46 @@ fun MainScreen(
     mainVM: MainVM = viewModel(factory = MainVMFactory())
 ) {
     val restaurantes by mainVM.restaurantes.collectAsState()
-
+    val context = LocalContext.current
     var mostrarFiltros by remember { mutableStateOf(false) }
     var filtrosSeleccionados by remember { mutableStateOf<List<String>>(emptyList()) }
-    //val userLocation = rememberUserLocation()
-    var ratioBusqueda by remember { mutableStateOf(50f) }
+    val userLocation = rememberUserLocation()
+    var ratioBusqueda by remember { mutableStateOf(10f) }
+    var buscarPorUbicacion by remember { mutableStateOf(false) }
 
-    val restaurantesFiltrados = restaurantes.filter { restaurante ->
-            filtrosSeleccionados.isEmpty() || filtrosSeleccionados.contains(restaurante.tipo_cocina)
-        /*
-        val restauranteLatLng = getLatLngFromAddress(context, restaurante.direccion)
-        val cumpleFiltroDistancia = restauranteLatLng != null && userLocation != null &&
-                calcularDistancia(userLocation, restauranteLatLng) <= ratioBusqueda
+    val restaurantesFiltrados = remember {
+        mutableStateOf<List<Restaurante>>(emptyList())
+    }
 
-        cumpleFiltroCocina && cumpleFiltroDistancia
-        */
+    LaunchedEffect(filtrosSeleccionados, buscarPorUbicacion, ratioBusqueda, restaurantes) {
+        val filteredRestaurants = restaurantes.filter { restaurante ->
+            val cumpleFiltroCocina =
+                filtrosSeleccionados.isEmpty() || filtrosSeleccionados.contains(restaurante.tipo_cocina)
+            val cumpleFiltroDistancia = if (buscarPorUbicacion) {
+                val restauranteLatLng = getLatLngFromAddress(context, restaurante.direccion)
+                if (restauranteLatLng != null && userLocation != null) {
+                    val distancia = calcularDistancia(userLocation, restauranteLatLng)
+                    Log.d(
+                        "FILTRADO RESTAURANTES",
+                        "Distancia para ${restaurante.nombre}: $distancia km"
+                    )
+                    distancia <= ratioBusqueda
+                } else {
+                    Log.e(
+                        "FILTRADO RESTAURANTES",
+                        "No se pudo obtener latitud/longitud de la dirección: ${restaurante.direccion}"
+                    )
+                    false
+                }
+            } else {
+                true
+            }
+
+            cumpleFiltroCocina && cumpleFiltroDistancia
+        }
+
+        restaurantesFiltrados.value = filteredRestaurants
+        Log.d("MainScreen", "Restaurantes filtrados: ${filteredRestaurants.size}")
     }
 
     Scaffold(topBar = {
@@ -191,7 +221,7 @@ fun MainScreen(
                     )
                 }
             } else {
-                items(restaurantesFiltrados) { restaurante ->
+                items(restaurantesFiltrados.value) { restaurante ->
                     RestauranteCard(restaurante, navController, usuarioId)
                 }
             }
@@ -203,9 +233,10 @@ fun MainScreen(
                 title = { Text(text = "Filtrar restaurantes") },
                 text = {
                     FiltrosScreen(
-                        onFiltrar = { tiposSeleccionados, radio ->
+                        onFiltrar = { tiposSeleccionados, radio, buscarUbicacion ->
                             filtrosSeleccionados = tiposSeleccionados
                             ratioBusqueda = radio
+                            buscarPorUbicacion = buscarUbicacion
                             mostrarFiltros = false
                         },
                         onDismiss = { mostrarFiltros = false }
@@ -217,7 +248,7 @@ fun MainScreen(
     }
 }
 
-/*
+
 @Composable
 fun rememberUserLocation(): LatLng? {
     val context = LocalContext.current
@@ -229,27 +260,54 @@ fun rememberUserLocation(): LatLng? {
             == PackageManager.PERMISSION_GRANTED
         ) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    userLocation = LatLng(it.latitude, it.longitude)
+                if (location != null) {
+                    Log.d(
+                        "UserLocation",
+                        "Ubicación obtenida: Lat: ${location.latitude}, Lng: ${location.longitude}"
+                    )
+                    userLocation = LatLng(location.latitude, location.longitude)
+                } else {
+                    Log.e("UserLocation", "No se pudo obtener la ubicación del usuario.")
                 }
+            }.addOnFailureListener { exception ->
+                Log.e("UserLocation", "Error al obtener la ubicación: ${exception.message}")
             }
+        } else {
+            Log.e("UserLocation", "Permiso de ubicación no concedido.")
         }
     }
-
     return userLocation
 }
 
-fun getLatLngFromAddress(context: Context, address: String): LatLng? {
-    return try {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        val addresses = geocoder.getFromLocationName(address, 1)
-        addresses?.firstOrNull()?.let {
-            LatLng(it.latitude, it.longitude)
+
+suspend fun getLatLngFromAddress(context: Context, address: String): LatLng? {
+    return withContext(Dispatchers.IO) {
+        try {
+            val geocoder = Geocoder(context, Locale.getDefault())
+            val addresses: List<Address>? = geocoder.getFromLocationName(address, 1)
+
+            if (addresses.isNullOrEmpty()) {
+                Log.e("GEOCODING", "No se encontró ninguna dirección para $address")
+                return@withContext null
+            }
+            val addressResult = addresses.firstOrNull()
+            if (addressResult != null) {
+                Log.d(
+                    "GEOCODING",
+                    "Dirección encontrada: Lat: ${addressResult.latitude}, Lon: ${addressResult.longitude}"
+                )
+                LatLng(addressResult.latitude, addressResult.longitude)
+            } else {
+                Log.e("GEOCODING", "No se pudo procesar la dirección correctamente.")
+                null
+            }
+        } catch (e: IOException) {
+            Log.e("GEOCODING", "Error de geocodificación: ${e.message}")
+            null
         }
-    } catch (e: IOException) {
-        null
     }
 }
+
 
 fun calcularDistancia(userLatLng: LatLng, restaurantLatLng: LatLng): Float {
     val userLocation = Location("").apply {
@@ -262,4 +320,3 @@ fun calcularDistancia(userLatLng: LatLng, restaurantLatLng: LatLng): Float {
     }
     return userLocation.distanceTo(restaurantLocation) / 1000 // Devuelve la distancia en km
 }
-*/
